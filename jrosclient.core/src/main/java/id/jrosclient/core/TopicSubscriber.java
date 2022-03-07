@@ -1,0 +1,108 @@
+/*
+ * Copyright 2020 jrosclient project
+ * 
+ * Website: https://github.com/lambdaprime/jrosclient
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package id.jrosclient.core;
+
+import id.jrosclient.core.impl.JRosClientSubscription;
+import id.jrosclient.core.utils.Utils;
+import id.jrosmessages.Message;
+import id.xfunction.XAsserts;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscription;
+
+/**
+ * Subscriber receives messages for the topic it is subscribed for and passes them to the onNext
+ * method.
+ *
+ * <p>This class simplifies implementation of new subscribers since it provides default
+ * implementations for most methods except onNext. The onNext method needs to be implemented for
+ * each subscriber separately.
+ *
+ * <p>Before subscriber can start to receive messages it needs to be subscribed for the topic.
+ *
+ * <p>See <a href="{@docRoot}/../index.html">Module documentation</a> for examples.
+ *
+ * @param <M> type of messages in the topic
+ * @author lambdaprime intid@protonmail.com
+ */
+public abstract class TopicSubscriber<M extends Message> implements Flow.Subscriber<M> {
+
+    private static final Utils utils = new Utils();
+
+    private Class<M> messageClass;
+    private Subscription subscription;
+    private String topic;
+    private int initNumOfMessages = 1;
+
+    /**
+     * Creates subscriber for a topic which when first subscribed will request 1 message.
+     *
+     * @param messageClass class of the messages in this topic
+     * @param topic Name of the topic which messages current subscriber wants to receive. Topic name
+     *     which should start from '/'
+     */
+    public TopicSubscriber(Class<M> messageClass, String topic) {
+        this.messageClass = messageClass;
+        this.topic = utils.formatTopicName(topic);
+    }
+
+    /**
+     * Allows to set how many messages to request once this subscriber will be first subscribed to
+     * some topic. Default number is one.
+     */
+    public TopicSubscriber<M> withInitialRequest(int numOfMessages) {
+        initNumOfMessages = numOfMessages;
+        return this;
+    }
+
+    @Override
+    public void onSubscribe(Subscription subscription) {
+        XAsserts.assertNull(this.subscription, "Already subscribed");
+        this.subscription = new JRosClientSubscription(subscription);
+        this.subscription.request(initNumOfMessages);
+    }
+
+    /**
+     * Common throwable types:
+     *
+     * <ul>
+     *   <li>EOFException - publisher unexpectedly closed the connection
+     * </ul>
+     */
+    @Override
+    public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
+    /** Default implementation does nothing but it can be redefined. */
+    @Override
+    public void onComplete() {}
+
+    /** Class of the messages in the current topic */
+    public Class<M> getMessageClass() {
+        return messageClass;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    /** Name of the topic of this subscriber */
+    public String getTopic() {
+        return topic;
+    }
+}
