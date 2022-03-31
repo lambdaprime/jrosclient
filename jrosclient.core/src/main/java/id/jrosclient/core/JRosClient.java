@@ -23,9 +23,7 @@ import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 
 /**
- * Main interface of the library which allows to interact with ROS.
- *
- * <p>Each instance of JRosClient acts as a separate ROS node and listens to its own ports.
+ * Main interface of the <b>jrosclient</b> which allows to interact with ROS.
  *
  * @author lambdaprime intid@protonmail.com
  */
@@ -35,31 +33,24 @@ public interface JRosClient extends AutoCloseable {
      * Subscribe to ROS topic
      *
      * @param <M> type of messages in the topic
+     * @param topic Name of the topic which messages current subscriber wants to receive.
+     * @param messageClass class of the messages in this topic
+     * @param subscriber is notified for any new message which gets published to given topic.
+     */
+    <M extends Message> void subscribe(
+            String topic, Class<M> messageClass, Subscriber<M> subscriber) throws Exception;
+
+    /**
+     * Subscribe to ROS topic.
+     *
+     * <p>Shorter version of {@link #subscribe(String, Class, Subscriber)} which is based on {@link
+     * TopicSubscriber}
+     *
+     * @param <M> type of messages in the topic
      * @param subscriber provides information about the topic to subscribe for. Once subscribed it
      *     will be notified for any new message which gets published to given topic.
      */
     <M extends Message> void subscribe(TopicSubscriber<M> subscriber) throws Exception;
-
-    /**
-     * Subscribe to ROS topic
-     *
-     * @param <M> type of messages in the topic
-     * @param topic Name of the topic which messages current subscriber wants to receive. Topic name
-     *     which should start from '/'
-     * @param messageClass class of the messages in this topic
-     * @param subscriber is notified for any new message which gets published to given topic.
-     */
-    public <M extends Message> void subscribe(
-            String topic, Class<M> messageClass, Subscriber<M> subscriber) throws Exception;
-
-    /**
-     * Create a new topic and start publishing messages for it.
-     *
-     * @param <M> type of messages in the topic
-     * @param publisher provides information about new topic. Once topic created publisher is used
-     *     to emit messages which will be sent to topic subscribers
-     */
-    public <M extends Message> void publish(TopicPublisher<M> publisher) throws Exception;
 
     /**
      * Create a new topic and start publishing messages for it.
@@ -69,13 +60,25 @@ public interface JRosClient extends AutoCloseable {
      * @param messageClass class of the messages in this topic
      * @param publisher is used to emit messages which will be sent to topic subscribers
      */
-    public <M extends Message> void publish(
-            String topic, Class<M> messageClass, Publisher<M> publisher) throws Exception;
+    <M extends Message> void publish(String topic, Class<M> messageClass, Publisher<M> publisher)
+            throws Exception;
 
     /**
-     * Unregister publisher in Master node and stop publisher from emitting new messages
+     * Create a new topic and start publishing messages for it.
+     *
+     * <p>Shorter version of {@link #publish(String, Class, Publisher)} which is based on {@link
+     * TopicPublisher}
+     *
+     * @param <M> type of messages in the topic
+     * @param publisher provides information about new topic. Once topic created publisher is used
+     *     to emit messages which will be sent to topic subscribers
+     */
+    <M extends Message> void publish(TopicPublisher<M> publisher) throws Exception;
+
+    /**
+     * Unregister publisher and stop it from emitting new messages
      *
      * @param topic name of the topic used by the publisher
      */
-    public void unpublish(String topic) throws IOException;
+    void unpublish(String topic) throws IOException;
 }
