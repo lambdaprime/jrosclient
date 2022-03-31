@@ -20,7 +20,7 @@ package id.jrosclient.core;
 import id.jrosclient.core.impl.JRosClientSubscription;
 import id.jrosclient.core.utils.Utils;
 import id.jrosmessages.Message;
-import id.xfunction.XAsserts;
+import id.xfunction.Preconditions;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
@@ -71,7 +71,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
 
     @Override
     public void onSubscribe(Subscription subscription) {
-        XAsserts.assertNull(this.subscription, "Already subscribed");
+        Preconditions.isNull(this.subscription, "Already subscribed");
         this.subscription = new JRosClientSubscription(subscription);
         this.subscription.request(initNumOfMessages);
     }
