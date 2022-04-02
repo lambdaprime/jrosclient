@@ -29,6 +29,9 @@ import java.util.concurrent.Flow.Subscriber;
  */
 public interface JRosClient extends AutoCloseable {
 
+    /** Returns ROS version which is supported by this client */
+    RosVersion getSupportedRosVersion();
+
     /**
      * Subscribe to ROS topic
      *
