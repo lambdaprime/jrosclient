@@ -18,10 +18,17 @@
 package id.jrosclient.core.utils;
 
 /** @author lambdaprime intid@protonmail.com */
-public class Utils {
+public class RosNameUtils {
 
-    public String formatTopicName(String name) {
-        if (!name.startsWith("/")) name = "/" + name;
-        return name;
+    /**
+     * Returns Fully Qualified Name
+     *
+     * @see <a
+     *     href="https://design.ros2.org/articles/topic_and_service_names.html#fully-qualified-names">Topic
+     *     and Service name mapping to DDS</a>
+     */
+    public String toAbsoluteName(String topicName) {
+        if (!topicName.startsWith("/")) topicName = "/" + topicName;
+        return topicName;
     }
 }

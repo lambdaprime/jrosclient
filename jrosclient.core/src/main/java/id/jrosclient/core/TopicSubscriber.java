@@ -18,7 +18,7 @@
 package id.jrosclient.core;
 
 import id.jrosclient.core.impl.JRosClientSubscription;
-import id.jrosclient.core.utils.Utils;
+import id.jrosclient.core.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
 import java.util.concurrent.Flow;
@@ -41,7 +41,7 @@ import java.util.concurrent.Flow.Subscription;
  */
 public abstract class TopicSubscriber<M extends Message> implements Flow.Subscriber<M> {
 
-    private static final Utils utils = new Utils();
+    private static final RosNameUtils utils = new RosNameUtils();
 
     private Class<M> messageClass;
     private Subscription subscription;
@@ -57,7 +57,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
      */
     public TopicSubscriber(Class<M> messageClass, String topic) {
         this.messageClass = messageClass;
-        this.topic = utils.formatTopicName(topic);
+        this.topic = utils.toAbsoluteName(topic);
     }
 
     /**

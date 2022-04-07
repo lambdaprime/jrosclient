@@ -17,7 +17,7 @@
  */
 package id.jrosclient.core;
 
-import id.jrosclient.core.utils.Utils;
+import id.jrosclient.core.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
@@ -40,7 +40,7 @@ import java.util.concurrent.SubmissionPublisher;
  */
 public class TopicSubmissionPublisher<M extends Message> extends SubmissionPublisher<M>
         implements TopicPublisher<M> {
-    private static final Utils utils = new Utils();
+    private static final RosNameUtils utils = new RosNameUtils();
 
     private final XLogger LOGGER = XLogger.getLogger(this);
 
@@ -53,7 +53,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
      */
     public TopicSubmissionPublisher(Class<M> messageClass, String topic) {
         this.messageClass = messageClass;
-        this.topic = utils.formatTopicName(topic);
+        this.topic = utils.toAbsoluteName(topic);
     }
 
     public Class<M> getMessageClass() {
