@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package id.jrosclient.core.utils;
+package id.jrosclient.utils;
 
 /** @author lambdaprime intid@protonmail.com */
 public class RosNameUtils {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package id.jrosclient.core;
+package id.jrosclient;
 
 /** @author lambdaprime intid@protonmail.com */
 public enum RosVersion {

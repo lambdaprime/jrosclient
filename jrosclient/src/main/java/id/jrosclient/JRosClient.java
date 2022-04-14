@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package id.jrosclient.core;
+package id.jrosclient;
 
 import id.jrosmessages.Message;
 import java.io.IOException;

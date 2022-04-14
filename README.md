@@ -1,4 +1,4 @@
-**jrosclient.core** - interfaces and classes which are agnostic to version of ROS (Robot Operating System)
+**jrosclient** - interfaces and classes which are agnostic to version of ROS (Robot Operating System)
 
 # Requirements
 
@@ -6,7 +6,7 @@ Java 17+
 
 # Download
 
-[Release versions](https://github.com/lambdaprime/jrosclient.core/releases)
+[Release versions](https://github.com/lambdaprime/jrosclient/releases)
 
 Or you can add dependency to it as follows:
 
@@ -14,7 +14,7 @@ Gradle:
 
 ```
 dependencies {
-    implementation 'io.github.lambdaprime:jrosclient.core:1.0'
+    implementation 'io.github.lambdaprime:jrosclient:1.0'
 }
 ```
 

@@ -91,7 +91,7 @@ if (project.hasProperty('publish')) {
       new id.xfunction.text.Substitutor()
           .withRegexpSupport()
           .substitute(java.nio.file.Paths.get("${project.rootDir}/README.md"), Map.of(
-              "io.github.lambdaprime:jrosclient.core:[0-9.]+", "io.github.lambdaprime:jrosclient.core:" + version
+              "io.github.lambdaprime:jrosclient:[0-9.]+", "io.github.lambdaprime:jrosclient:" + version
           ));
   }
   createPackage.dependsOn updateVersion
@@ -120,11 +120,11 @@ if (project.hasProperty('publish')) {
   publishing {
     publications {
       mavenJava(MavenPublication) {
-        artifactId = 'jrosclient.core'
+        artifactId = 'jrosclient'
         groupId = 'io.github.lambdaprime'
         from components.java
         pom {
-          name = 'jrosclient.core'
+          name = 'jrosclient'
           description = 'jrosclient interfaces and classes which are agnostic to version of ROS (Robot Operating System)'
           url = 'http://portal2.atwebpages.com/jrosclient'
 
@@ -143,7 +143,7 @@ if (project.hasProperty('publish')) {
           }
 
           scm {
-            url = 'https://github.com/lambdaprime/jrosclient.core'
+            url = 'https://github.com/lambdaprime/jrosclient'
           }
         }
       }

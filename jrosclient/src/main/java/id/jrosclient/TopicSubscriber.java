@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package id.jrosclient.core;
+package id.jrosclient;
 
-import id.jrosclient.core.impl.JRosClientSubscription;
-import id.jrosclient.core.utils.RosNameUtils;
+import id.jrosclient.impl.JRosClientSubscription;
+import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
 import java.util.concurrent.Flow;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package id.jrosclient.core.impl;
+package id.jrosclient.impl;
 
 import id.xfunction.logging.XLogger;
 import java.util.concurrent.Flow.Subscription;

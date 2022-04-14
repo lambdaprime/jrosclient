@@ -21,4 +21,4 @@
  *
  * @author lambdaprime intid@protonmail.com
  */
-package id.jrosclient.core;
+package id.jrosclient;

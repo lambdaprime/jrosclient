@@ -20,14 +20,14 @@
  * <b>jrosclient</b> interfaces and classes which are agnostic to version of ROS (Robot Operating
  * System).
  *
- * @see <a href= "https://github.com/lambdaprime/jrosclient-core/releases">Download</a>
- * @see <a href="https://github.com/lambdaprime/jrosclient-core">GitHub repository</a>
+ * @see <a href= "https://github.com/lambdaprime/jrosclient/releases">Download</a>
+ * @see <a href="https://github.com/lambdaprime/jrosclient">GitHub repository</a>
  * @author lambdaprime intid@protonmail.com
  */
-module jrosclient.core {
+module jrosclient {
     requires id.xfunction;
     requires transitive jrosmessages;
 
-    exports id.jrosclient.core;
-    exports id.jrosclient.core.utils;
+    exports id.jrosclient;
+    exports id.jrosclient.utils;
 }
