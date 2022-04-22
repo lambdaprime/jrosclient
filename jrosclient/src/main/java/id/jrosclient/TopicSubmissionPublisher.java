@@ -22,6 +22,9 @@ import id.jrosmessages.Message;
 import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
 import id.xfunction.logging.XLogger;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Flow;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.SubmissionPublisher;
 
 /**
@@ -48,18 +51,37 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
     private String topic;
 
     /**
+     * Create topic publisher with {@link ForkJoinPool#commonPool()} executor and {@link
+     * Flow#defaultBufferSize()} buffer size
+     *
      * @param messageClass class of messages in the topic
      * @param topic topic name
      */
     public TopicSubmissionPublisher(Class<M> messageClass, String topic) {
+        this(
+                messageClass,
+                utils.toAbsoluteName(topic),
+                ForkJoinPool.commonPool(),
+                Flow.defaultBufferSize());
+    }
+
+    /**
+     * @param messageClass class of messages in the topic
+     * @param topic topic name
+     */
+    public TopicSubmissionPublisher(
+            Class<M> messageClass, String topic, Executor executor, int maxBufferCapacity) {
+        super(executor, maxBufferCapacity);
         this.messageClass = messageClass;
         this.topic = utils.toAbsoluteName(topic);
     }
 
+    @Override
     public Class<M> getMessageClass() {
         return messageClass;
     }
 
+    @Override
     public String getTopic() {
         return topic;
     }
