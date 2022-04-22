@@ -84,4 +84,7 @@ public interface JRosClient extends AutoCloseable {
      * @param topic name of the topic used by the publisher
      */
     void unpublish(String topic) throws IOException;
+
+    /** Check if there is any publisher available in the system for a given topic */
+    boolean hasPublisher(String topic);
 }
