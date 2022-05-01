@@ -19,6 +19,7 @@ package id.jrosclient;
 
 import id.jrosmessages.Message;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 
@@ -29,8 +30,8 @@ import java.util.concurrent.Flow.Subscriber;
  */
 public interface JRosClient extends AutoCloseable {
 
-    /** Returns ROS version which is supported by this client */
-    RosVersion getSupportedRosVersion();
+    /** Returns ROS versions which are supported by this client */
+    EnumSet<RosVersion> getSupportedRosVersion();
 
     /**
      * Subscribe to ROS topic
