@@ -20,7 +20,9 @@ package id.jrosclient.impl;
 import id.xfunction.logging.XLogger;
 import java.util.concurrent.Flow.Subscription;
 
-/** @author lambdaprime intid@protonmail.com */
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
 public class JRosClientSubscription implements Subscription {
 
     private static final XLogger LOGGER = XLogger.getLogger(JRosClientSubscription.class);

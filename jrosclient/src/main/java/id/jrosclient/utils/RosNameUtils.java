@@ -17,8 +17,17 @@
  */
 package id.jrosclient.utils;
 
-/** @author lambdaprime intid@protonmail.com */
+import id.jrosmessages.Message;
+import id.jrosmessages.MessageMetadataAccessor;
+import id.xfunction.Preconditions;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
 public class RosNameUtils {
+    private MessageMetadataAccessor metadataAccessor = new MessageMetadataAccessor();
 
     /**
      * Returns Fully Qualified Name
@@ -30,5 +39,14 @@ public class RosNameUtils {
     public String toAbsoluteName(String topicName) {
         if (!topicName.startsWith("/")) topicName = "/" + topicName;
         return topicName;
+    }
+
+    /** Returns mROS essage name split on tokens */
+    public Path getMessageName(Class<? extends Message> messageClass) {
+        var messageName = metadataAccessor.getName(messageClass);
+        var path = Paths.get(messageName);
+        Preconditions.equals(
+                2, path.getNameCount(), "Message name format is invalid: " + messageName);
+        return path;
     }
 }

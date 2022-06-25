@@ -17,7 +17,9 @@
  */
 package id.jrosclient;
 
-/** @author lambdaprime intid@protonmail.com */
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
 public enum RosVersion {
     ROS1,
     ROS2

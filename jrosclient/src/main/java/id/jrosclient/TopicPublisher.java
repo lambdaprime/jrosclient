@@ -33,10 +33,14 @@ import java.util.concurrent.Flow;
  */
 public interface TopicPublisher<M extends Message> extends Flow.Publisher<M>, AutoCloseable {
 
-    /** @return class of messages which is published in this topic */
+    /**
+     * @return class of messages which is published in this topic
+     */
     Class<M> getMessageClass();
 
-    /** @return Topic name */
+    /**
+     * @return Topic name
+     */
     String getTopic();
 
     /**

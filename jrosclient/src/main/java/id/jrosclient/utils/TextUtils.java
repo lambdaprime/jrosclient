@@ -22,7 +22,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/** @author lambdaprime intid@protonmail.com */
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
 public class TextUtils {
 
     private Optional<Ellipsizer> ellipsizerOpt = Optional.empty();
