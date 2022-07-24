@@ -24,7 +24,7 @@ import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 
 /**
- * Main interface of the <b>jrosclient</b> which allows to interact with ROS.
+ * Main interface of the <b>jrosclient</b> which allows to interact with different versions of ROS.
  *
  * @author lambdaprime intid@protonmail.com
  */
@@ -59,6 +59,9 @@ public interface JRosClient extends AutoCloseable {
     /**
      * Create a new topic and start publishing messages for it.
      *
+     * <p>This allows to use same instance of {@link Publisher} to publish messages on multiple of
+     * different topics as long as their message types are similar.
+     *
      * @param <M> type of messages in the topic
      * @param topic Topic name
      * @param messageClass class of the messages in this topic
@@ -88,4 +91,8 @@ public interface JRosClient extends AutoCloseable {
 
     /** Check if there is any publisher available in the system for a given topic */
     boolean hasPublisher(String topic);
+
+    /** May block until there is no more pending messages in any of the publisher internal queue */
+    @Override
+    void close();
 }

@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'com.diffplug.spotless'
+}
+
+apply plugin : 'eclipse'
+
+dependencies {
+    implementation "io.github.lambdaprime:jrosclient:${rootProject.version}"
+    implementation 'io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT'
+    implementation 'io.github.lambdaprime:id.xfunction:17.0-SNAPSHOT'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+
+    apiElements "io.github.lambdaprime:jrosclient:${rootProject.version}"
+    apiElements 'io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT'
+    apiElements 'io.github.lambdaprime:id.xfunction:17.0-SNAPSHOT'
+    apiElements 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    apiElements 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+
+    runtimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+    runtimeOnly 'org.junit.platform:junit-platform-commons:1.7.0'
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+test {
+    useJUnitPlatform()
+}
+
+// run spotless and format code before the build
+testClasses.dependsOn spotlessApply
+
+if (project.hasProperty('publish')) {
+
+  apply plugin: 'maven-publish'
+
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        artifactId = 'jrosclient.tests'
+        groupId = 'io.github.lambdaprime'
+        from components.java
+        pom {
+          name = 'jrosclient.tests'
+          description = 'jrosclient tests'
+          url = 'http://portal2.atwebpages.com/jrosclient'
+
+          licenses {
+            license {
+              name = 'The Apache License, Version 2.0'
+              url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+          }
+
+          developers {
+            developer {
+              id = 'lambdaprime'
+              email = 'intid@protonmail.com'
+            }
+          }
+
+          scm {
+            url = 'https://github.com/lambdaprime/jrosclient'
+          }
+        }
+      }
+    }
+  }
+}
