@@ -59,6 +59,9 @@ public interface JRosClient extends AutoCloseable {
     /**
      * Create a new topic and start publishing messages for it.
      *
+     * <p>Publisher is used to publish messages for particular topic. Other ROS nodes can see the
+     * topic and subscribe for it so they will start receiving messages published to it.
+     *
      * <p>This allows to use same instance of {@link Publisher} to publish messages on multiple of
      * different topics as long as their message types are similar.
      *

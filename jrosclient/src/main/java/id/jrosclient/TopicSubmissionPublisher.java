@@ -105,6 +105,6 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
 
     @Override
     public void onPublishError(Throwable exception) {
-        LOGGER.severe("Error delivering message to the subscriber: {0}", exception);
+        LOGGER.severe("Error delivering message to the subscriber", exception);
     }
 }

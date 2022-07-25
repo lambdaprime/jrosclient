@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.util.concurrent.Flow;
 
 /**
- * Publisher responsible for publishing messages for particular topic. Other ROS nodes can see the
- * topic and subscribe for it so they will start receiving messages published to it.
+ * Optional version of Java standard {@link Flow.Publisher} with few additions for JRosClient.
  *
  * <p><b>JRosClient</b> provides {@link TopicSubmissionPublisher} as a default implementation for
  * publisher which can be used in most of the cases.
@@ -49,7 +48,14 @@ public interface TopicPublisher<M extends Message> extends Flow.Publisher<M>, Au
      */
     void onPublishError(Throwable throwable);
 
-    /** Stop to emit any new messages */
+    /**
+     * Stop to emit any new messages.
+     *
+     * <p>Many {@link Flow.Publisher} implementations allow to publish messages asynchronously which
+     * in most cases require to maintain internal queue. This method puts a constraint to such
+     * implementations and requires them to block until there is no more pending messages in its
+     * internal queue and all messages are sent to subscribers.
+     */
     @Override
     void close() throws IOException;
 }
