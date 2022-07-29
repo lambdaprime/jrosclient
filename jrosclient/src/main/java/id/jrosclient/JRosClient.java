@@ -54,7 +54,9 @@ public interface JRosClient extends AutoCloseable {
      * @param subscriber provides information about the topic to subscribe for. Once subscribed it
      *     will be notified for any new message which gets published to given topic.
      */
-    <M extends Message> void subscribe(TopicSubscriber<M> subscriber) throws Exception;
+    default <M extends Message> void subscribe(TopicSubscriber<M> subscriber) throws Exception {
+        subscribe(subscriber.getTopic(), subscriber.getMessageClass(), subscriber);
+    }
 
     /**
      * Create a new topic and start publishing messages for it.
@@ -70,8 +72,36 @@ public interface JRosClient extends AutoCloseable {
      * @param messageClass class of the messages in this topic
      * @param publisher is used to emit messages which will be sent to topic subscribers
      */
-    <M extends Message> void publish(String topic, Class<M> messageClass, Publisher<M> publisher)
-            throws Exception;
+    default <M extends Message> void publish(
+            String topic, Class<M> messageClass, Publisher<M> publisher) throws Exception {
+        publish(
+                new TopicPublisher<M>() {
+                    @Override
+                    public void subscribe(Subscriber<? super M> subscriber) {
+                        publisher.subscribe(subscriber);
+                    }
+
+                    @Override
+                    public Class<M> getMessageClass() {
+                        return messageClass;
+                    }
+
+                    @Override
+                    public String getTopic() {
+                        return topic;
+                    }
+
+                    @Override
+                    public void onPublishError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void close() throws IOException {
+                        // ignore as it is not Flow.Publisher method
+                    }
+                });
+    }
 
     /**
      * Create a new topic and start publishing messages for it.
@@ -90,7 +120,11 @@ public interface JRosClient extends AutoCloseable {
      *
      * @param topic name of the topic used by the publisher
      */
-    void unpublish(String topic) throws IOException;
+    <M extends Message> void unpublish(String topic, Class<M> messageClass) throws IOException;
+
+    default <M extends Message> void unpublish(TopicPublisher<M> publisher) throws IOException {
+        unpublish(publisher.getTopic(), publisher.getMessageClass());
+    }
 
     /** Check if there is any publisher available in the system for a given topic */
     boolean hasPublisher(String topic);

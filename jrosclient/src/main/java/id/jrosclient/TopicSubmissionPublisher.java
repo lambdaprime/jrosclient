@@ -17,7 +17,6 @@
  */
 package id.jrosclient;
 
-import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
@@ -43,8 +42,6 @@ import java.util.concurrent.SubmissionPublisher;
  */
 public class TopicSubmissionPublisher<M extends Message> extends SubmissionPublisher<M>
         implements TopicPublisher<M> {
-    private static final RosNameUtils utils = new RosNameUtils();
-
     private final XLogger LOGGER = XLogger.getLogger(this);
 
     private Class<M> messageClass;
@@ -58,11 +55,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
      * @param topic topic name
      */
     public TopicSubmissionPublisher(Class<M> messageClass, String topic) {
-        this(
-                messageClass,
-                utils.toAbsoluteName(topic),
-                ForkJoinPool.commonPool(),
-                Flow.defaultBufferSize());
+        this(messageClass, topic, ForkJoinPool.commonPool(), Flow.defaultBufferSize());
     }
 
     /**
@@ -73,7 +66,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
             Class<M> messageClass, String topic, Executor executor, int maxBufferCapacity) {
         super(executor, maxBufferCapacity);
         this.messageClass = messageClass;
-        this.topic = utils.toAbsoluteName(topic);
+        this.topic = topic;
     }
 
     @Override

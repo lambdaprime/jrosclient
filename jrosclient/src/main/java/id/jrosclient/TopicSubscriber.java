@@ -21,6 +21,7 @@ import id.jrosclient.impl.JRosClientSubscription;
 import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
+import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
@@ -44,7 +45,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     private static final RosNameUtils utils = new RosNameUtils();
 
     private Class<M> messageClass;
-    private Subscription subscription;
+    private Optional<Subscription> subscription;
     private String topic;
     private int initNumOfMessages = 1;
 
@@ -72,8 +73,8 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     @Override
     public void onSubscribe(Subscription subscription) {
         Preconditions.isNull(this.subscription, "Already subscribed");
-        this.subscription = new JRosClientSubscription(subscription);
-        this.subscription.request(initNumOfMessages);
+        this.subscription = Optional.of(new JRosClientSubscription(subscription));
+        this.subscription.get().request(initNumOfMessages);
     }
 
     /**
@@ -97,7 +98,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
         return messageClass;
     }
 
-    public Subscription getSubscription() {
+    public Optional<Subscription> getSubscription() {
         return subscription;
     }
 
