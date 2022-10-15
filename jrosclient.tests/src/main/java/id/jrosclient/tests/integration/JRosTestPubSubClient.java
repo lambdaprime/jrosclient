@@ -23,6 +23,7 @@ import id.pubsubtests.TestPubSubClient;
 import id.xfunction.concurrent.SameThreadExecutorService;
 import id.xfunction.concurrent.flow.TransformProcessor;
 import id.xfunction.function.Unchecked;
+import java.util.Optional;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 
@@ -46,14 +47,17 @@ public class JRosTestPubSubClient implements TestPubSubClient {
     public void publish(String topic, Publisher<String> publisher) {
         var transformer =
                 new TransformProcessor<String, StringMessage>(
-                        str -> new StringMessage(str), new SameThreadExecutorService(), 1);
+                        str -> Optional.of(new StringMessage(str)),
+                        new SameThreadExecutorService(),
+                        1);
         publisher.subscribe(transformer);
         Unchecked.run(() -> client.publish(topic, StringMessage.class, transformer));
     }
 
     @Override
     public void subscribe(String topic, Subscriber<String> subscriber) {
-        var transformer = new TransformProcessor<StringMessage, String>(m -> m.data);
+        var transformer =
+                new TransformProcessor<StringMessage, String>(m -> Optional.ofNullable(m.data));
         transformer.subscribe(subscriber);
         Unchecked.run(() -> client.subscribe(topic, StringMessage.class, transformer));
     }

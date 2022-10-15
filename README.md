@@ -1,5 +1,9 @@
 **jrosclient** - interfaces and classes which are agnostic to version of ROS (Robot Operating System)
 
+For ROS2 see [jros2client](https://github.com/lambdaprime/jros2client)
+
+For ROS1 see [jros1client](https://github.com/lambdaprime/jros1client)
+
 # Requirements
 
 Java 17+

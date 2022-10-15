@@ -8,13 +8,13 @@ apply plugin : 'eclipse'
 dependencies {
     implementation "io.github.lambdaprime:jrosclient:${rootProject.version}"
     implementation 'io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT'
-    implementation 'io.github.lambdaprime:id.xfunction:17.0-SNAPSHOT'
+    implementation 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     implementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
 
     apiElements "io.github.lambdaprime:jrosclient:${rootProject.version}"
     apiElements 'io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT'
-    apiElements 'io.github.lambdaprime:id.xfunction:17.0-SNAPSHOT'
+    apiElements 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
     apiElements 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     apiElements 'org.junit.jupiter:junit-jupiter-params:5.4.2'
 
