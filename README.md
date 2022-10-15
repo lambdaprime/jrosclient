@@ -1,4 +1,4 @@
-**jrosclient** - interfaces and classes which are agnostic to version of ROS (Robot Operating System)
+**jrosclient** - base Java module for interaction with ROS (Robot Operating System). It contains only interfaces and classes which are agnostic to version of ROS
 
 For ROS2 see [jros2client](https://github.com/lambdaprime/jros2client)
 
