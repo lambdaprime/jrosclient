@@ -24,12 +24,12 @@ eclipse.classpath.file {
 }
 
 dependencies {
-    implementation 'io.github.lambdaprime:jrosmessages:1.0-SNAPSHOT'
-    implementation 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
+    implementation 'io.github.lambdaprime:jrosmessages:1.0'
+    implementation 'io.github.lambdaprime:id.xfunction:19.0'
 
     // transitively export following dependency to tests project
-    apiElements 'io.github.lambdaprime:jrosmessages:1.0-SNAPSHOT'
-    apiElements 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
+    apiElements 'io.github.lambdaprime:jrosmessages:1.0'
+    apiElements 'io.github.lambdaprime:id.xfunction:19.0'
 }
 
 sourceCompatibility = '17'
@@ -49,6 +49,7 @@ javadoc {
     options.noNavBar = true
     // ignore missing @return, @param etc
     options.addBooleanOption('Xdoclint:all,-missing', true)
+    exclude 'id/jrosclient/impl/**'
 }
 
 def packageDir = "$buildDir/package/${projectName}"

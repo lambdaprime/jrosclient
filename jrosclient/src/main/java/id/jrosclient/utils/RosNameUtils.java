@@ -41,7 +41,7 @@ public class RosNameUtils {
         return topicName;
     }
 
-    /** Returns mROS essage name split on tokens */
+    /** Returns ROS message name split on tokens */
     public Path getMessageName(Class<? extends Message> messageClass) {
         var messageName = metadataAccessor.getName(messageClass);
         var path = Paths.get(messageName);
