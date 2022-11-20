@@ -45,7 +45,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     private static final RosNameUtils utils = new RosNameUtils();
 
     private Class<M> messageClass;
-    private Optional<Subscription> subscription;
+    private Optional<Subscription> subscription = Optional.empty();
     private String topic;
     private int initNumOfMessages = 1;
 
@@ -72,7 +72,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
 
     @Override
     public void onSubscribe(Subscription subscription) {
-        Preconditions.isNull(this.subscription, "Already subscribed");
+        Preconditions.isTrue(this.subscription.isEmpty(), "Already subscribed");
         this.subscription = Optional.of(new JRosClientSubscription(subscription));
         this.subscription.get().request(initNumOfMessages);
     }
