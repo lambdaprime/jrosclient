@@ -29,5 +29,6 @@ module jrosclient {
     requires transitive jrosmessages;
 
     exports id.jrosclient;
+    exports id.jrosclient.exceptions;
     exports id.jrosclient.utils;
 }

@@ -1,38 +1,37 @@
 // include xfunction for updateVersion
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "io.github.lambdaprime:id.xfunction:14.0"
-    }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "io.github.lambdaprime:id.xfunction:14.0"
+  }
 }
 
 plugins {
-    id 'java'
-    id 'com.diffplug.spotless'
+  id 'com.diffplug.spotless'
 }
 
 apply plugin : 'eclipse'
 
 eclipse.classpath.file {
-    // instruct eclipse plugin to put everything to module path
-    whenMerged {
-        entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
-    }
+  // instruct eclipse plugin to put everything to module path
+  whenMerged {
+    entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
+  }
 }
 
 dependencies {
-    implementation 'io.github.lambdaprime:jrosmessages:2.0-SNAPSHOT'
-    implementation 'io.github.lambdaprime:id.xfunction:20.0-SNAPSHOT'
+  addDependencies(this, ["implementation", "apiElements"], "2.0-SNAPSHOT", [
+    "io.github.lambdaprime:jrosmessages"
+  ]);
+  addDependencies(this, ["implementation", "apiElements"], "20.0", [
+    "io.github.lambdaprime:id.xfunction"
+  ]);
 
     // transitively export following dependency to tests project
     apiElements 'io.github.lambdaprime:jrosmessages:2.0-SNAPSHOT'
-    apiElements 'io.github.lambdaprime:id.xfunction:20.0-SNAPSHOT'
 }
-
-sourceCompatibility = '17'
-targetCompatibility = '17'
 
 jar {
     manifest { 

@@ -17,6 +17,7 @@
  */
 package id.jrosclient;
 
+import id.jrosclient.exceptions.JRosClientException;
 import id.jrosmessages.Message;
 import java.io.IOException;
 import java.util.EnumSet;
@@ -42,7 +43,8 @@ public interface JRosClient extends AutoCloseable {
      * @param subscriber is notified for any new message which gets published to given topic.
      */
     <M extends Message> void subscribe(
-            String topic, Class<M> messageClass, Subscriber<M> subscriber) throws Exception;
+            String topic, Class<M> messageClass, Subscriber<M> subscriber)
+            throws JRosClientException;
 
     /**
      * Subscribe to ROS topic.
@@ -54,7 +56,8 @@ public interface JRosClient extends AutoCloseable {
      * @param subscriber provides information about the topic to subscribe for. Once subscribed it
      *     will be notified for any new message which gets published to given topic.
      */
-    default <M extends Message> void subscribe(TopicSubscriber<M> subscriber) throws Exception {
+    default <M extends Message> void subscribe(TopicSubscriber<M> subscriber)
+            throws JRosClientException {
         subscribe(subscriber.getTopic(), subscriber.getMessageClass(), subscriber);
     }
 
@@ -73,7 +76,8 @@ public interface JRosClient extends AutoCloseable {
      * @param publisher is used to emit messages which will be sent to topic subscribers
      */
     default <M extends Message> void publish(
-            String topic, Class<M> messageClass, Publisher<M> publisher) throws Exception {
+            String topic, Class<M> messageClass, Publisher<M> publisher)
+            throws JRosClientException {
         publish(
                 new TopicPublisher<M>() {
                     @Override
@@ -113,16 +117,18 @@ public interface JRosClient extends AutoCloseable {
      * @param publisher provides information about new topic. Once topic created publisher is used
      *     to emit messages which will be sent to topic subscribers
      */
-    <M extends Message> void publish(TopicPublisher<M> publisher) throws Exception;
+    <M extends Message> void publish(TopicPublisher<M> publisher) throws JRosClientException;
 
     /**
      * Unregister publisher and stop it from emitting new messages
      *
      * @param topic name of the topic used by the publisher
      */
-    <M extends Message> void unpublish(String topic, Class<M> messageClass) throws IOException;
+    <M extends Message> void unpublish(String topic, Class<M> messageClass)
+            throws JRosClientException;
 
-    default <M extends Message> void unpublish(TopicPublisher<M> publisher) throws IOException {
+    default <M extends Message> void unpublish(TopicPublisher<M> publisher)
+            throws JRosClientException {
         unpublish(publisher.getTopic(), publisher.getMessageClass());
     }
 

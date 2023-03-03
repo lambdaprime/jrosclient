@@ -17,7 +17,11 @@
  */
 package id.jrosclient.utils;
 
+import id.jrosclient.exceptions.JRosClientException;
+import id.xfunction.io.XOutputStream;
 import id.xfunction.text.Ellipsizer;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +52,12 @@ public class TextUtils {
     }
 
     public String toString(byte[] obj) {
-        return toString(Arrays.toString(obj));
+        var out = new XOutputStream();
+        try {
+            new ByteArrayInputStream(obj).transferTo(out);
+        } catch (IOException e) {
+            throw new JRosClientException(e);
+        }
+        return toString("[" + out.asHexString() + "]");
     }
 }
