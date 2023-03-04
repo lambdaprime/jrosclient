@@ -22,32 +22,26 @@ eclipse.classpath.file {
 }
 
 dependencies {
-  addDependencies(this, ["implementation", "apiElements"], "2.0-SNAPSHOT", [
+  addDependencies(this, ["implementation", "apiElements"], "2.0", [
     "io.github.lambdaprime:jrosmessages"
   ]);
-  addDependencies(this, ["implementation", "apiElements"], "20.0", [
-    "io.github.lambdaprime:id.xfunction"
-  ]);
-
-    // transitively export following dependency to tests project
-    apiElements 'io.github.lambdaprime:jrosmessages:2.0-SNAPSHOT'
 }
 
 jar {
-    manifest { 
-        attributes 'Implementation-Version': "${rootProject.version}"
-    }
+  manifest { 
+    attributes 'Implementation-Version': "${rootProject.version}"
+  }
 }
 
 javadoc {
-    options.noTimestamp = true
-    options.noQualifiers = ["all"]
-    options.noTree = true
-    options.noIndex = true
-    options.noNavBar = true
-    // ignore missing @return, @param etc
-    options.addBooleanOption('Xdoclint:all,-missing', true)
-    exclude 'id/jrosclient/impl/**'
+  options.noTimestamp = true
+  options.noQualifiers = ["all"]
+  options.noTree = true
+  options.noIndex = true
+  options.noNavBar = true
+  // ignore missing @return, @param etc
+  options.addBooleanOption('Xdoclint:all,-missing', true)
+  exclude 'id/jrosclient/impl/**'
 }
 
 def packageDir = "$buildDir/package/${projectName}"
@@ -71,7 +65,8 @@ task createPackage(type: Copy, dependsOn: [copyLibs]) {
 }
 
 task cleanRelease(type: Delete) {
-    delete "$projectDir/release"
+  delete "$packageDir"
+  delete "$projectDir/release/*-SNAPSHOT.zip"
 }
 
 createRelease.dependsOn createPackage, javadoc
@@ -85,13 +80,13 @@ if (project.hasProperty('publish')) {
 
   // update version only during publishing
   task updateVersion() {
-      if (version.contains("SNAPSHOT")) return;
-      println "Updating version to " + version
-      new id.xfunction.text.Substitutor()
-          .withRegexpSupport()
-          .substitute(java.nio.file.Paths.get("${project.rootDir}/README.md"), Map.of(
-              "io.github.lambdaprime:jrosclient:[0-9.]+", "io.github.lambdaprime:jrosclient:" + version
-          ));
+    if (version.contains("SNAPSHOT")) return;
+    println "Updating version to " + version
+    new id.xfunction.text.Substitutor()
+      .withRegexpSupport()
+      .substitute(java.nio.file.Paths.get("${project.rootDir}/README.md"), Map.of(
+        "io.github.lambdaprime:jrosclient:[0-9.]+", "io.github.lambdaprime:jrosclient:" + version
+      ));
   }
   createPackage.dependsOn updateVersion
 
