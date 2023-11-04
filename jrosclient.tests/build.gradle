@@ -3,26 +3,28 @@ plugins {
   id 'jacoco'
 }
 
-apply plugin : 'eclipse'
+eclipse.classpath.file {
+  // instruct eclipse plugin to put everything to module path
+  whenMerged {
+    entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
+  }
+}
 
 dependencies {
   implementation project(':jrosclient')
-  addDependencies(this, ["implementation", "apiElements"], "1.0-SNAPSHOT", [
-    "io.github.lambdaprime:pubsubtests"
-  ]);
-  addDependencies(this, ["implementation", "apiElements"], "5.4.2", [
-    "org.junit.jupiter:junit-jupiter-api",
-    "org.junit.jupiter:junit-jupiter-params"
-  ]);
+  implementation "io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT"
 
-  apiElements project(':jrosclient')
-
-  runtimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
-  runtimeOnly 'org.junit.platform:junit-platform-commons:1.7.0'
+  def junitVersion = "5.8.1"
+  implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+  implementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+  runtimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+  runtimeOnly "org.junit.platform:junit-platform-commons:1.7.0"
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+jacoco {
+  // Java 21 support
+  toolVersion = "0.8.10"
+}
 
 test {
   useJUnitPlatform()

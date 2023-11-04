@@ -20,6 +20,8 @@
  * <b>jrosclient</b> interfaces and classes which are agnostic to version of ROS (Robot Operating
  * System).
  *
+ * <p>For usage examples see <a href="http://portal2.atwebpages.com/jrosclient">Documentation</a>
+ *
  * @see <a href= "https://github.com/lambdaprime/jrosclient/releases">Download</a>
  * @see <a href="https://github.com/lambdaprime/jrosclient">GitHub repository</a>
  * @author lambdaprime intid@protonmail.com
