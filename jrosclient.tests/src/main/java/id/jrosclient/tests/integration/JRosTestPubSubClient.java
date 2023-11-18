@@ -44,10 +44,10 @@ public class JRosTestPubSubClient implements TestPubSubClient {
     }
 
     @Override
-    public void publish(String topic, Publisher<String> publisher) {
+    public void publish(String topic, Publisher<byte[]> publisher) {
         var transformer =
-                new TransformProcessor<String, StringMessage>(
-                        str -> Optional.of(new StringMessage(str)),
+                new TransformProcessor<byte[], StringMessage>(
+                        data -> Optional.of(new StringMessage(new String(data))),
                         new SameThreadExecutorService(),
                         1);
         publisher.subscribe(transformer);
@@ -55,9 +55,10 @@ public class JRosTestPubSubClient implements TestPubSubClient {
     }
 
     @Override
-    public void subscribe(String topic, Subscriber<String> subscriber) {
+    public void subscribe(String topic, Subscriber<byte[]> subscriber) {
         var transformer =
-                new TransformProcessor<StringMessage, String>(m -> Optional.ofNullable(m.data));
+                new TransformProcessor<StringMessage, byte[]>(
+                        m -> Optional.ofNullable(m.data.getBytes()));
         transformer.subscribe(subscriber);
         Unchecked.run(() -> client.subscribe(topic, StringMessage.class, transformer));
     }

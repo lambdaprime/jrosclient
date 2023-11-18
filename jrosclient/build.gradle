@@ -24,7 +24,7 @@ eclipse.classpath.file {
 }
 
 dependencies {
-  api "io.github.lambdaprime:jrosmessages:2.0"
+  api "io.github.lambdaprime:jrosmessages:4.0-SNAPSHOT"
 }
 
 configurations {

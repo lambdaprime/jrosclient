@@ -21,6 +21,7 @@ import id.jrosclient.impl.JRosClientSubscription;
 import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
+import id.xfunction.logging.XLogger;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
@@ -41,13 +42,14 @@ import java.util.concurrent.Flow.Subscription;
  * @author lambdaprime intid@protonmail.com
  */
 public abstract class TopicSubscriber<M extends Message> implements Flow.Subscriber<M> {
-
+    private final XLogger LOGGER = XLogger.getLogger(this);
     private static final RosNameUtils utils = new RosNameUtils();
 
     private Class<M> messageClass;
     private Optional<Subscription> subscription = Optional.empty();
     private String topic;
     private int initNumOfMessages = 1;
+    private boolean muteDefaultHandlerDetails;
 
     /**
      * Creates subscriber for a topic which when first subscribed will request 1 message.
@@ -86,6 +88,13 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
      */
     @Override
     public void onError(Throwable throwable) {
+        LOGGER.severe("Default onError handler: {0}", throwable);
+        System.err.println("Exception received by default TopicSubscriber::onError handler:");
+        if (!muteDefaultHandlerDetails) {
+            System.err.println(
+                    "To change default onError handler, simply override onError of the subscriber");
+            muteDefaultHandlerDetails = true;
+        }
         throwable.printStackTrace();
     }
 

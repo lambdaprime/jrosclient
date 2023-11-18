@@ -27,6 +27,11 @@ import java.util.concurrent.Flow.Subscriber;
 /**
  * Main interface of the <b>jrosclient</b> which allows to interact with different versions of ROS.
  *
+ * <p>We do not recommend using same object (instance) of JRosClient for publish and subscribe to
+ * same topic. It is preferable to use two separate objects (see <a
+ * href="https://github.com/lambdaprime/jros2client/blob/45418bf545a77515ddf27b8d95c9d0ace7376df8/jros2client.examples/src/PublisherSubscriberApp.java">PublisherSubscriberApp</a>
+ * for ROS2 implementation)
+ *
  * @author lambdaprime intid@protonmail.com
  */
 public interface JRosClient extends AutoCloseable {
@@ -36,6 +41,8 @@ public interface JRosClient extends AutoCloseable {
 
     /**
      * Subscribe to ROS topic
+     *
+     * <p>By default, subscriber always runs on its own thread after it was subscribed.
      *
      * @param <M> type of messages in the topic
      * @param topic Name of the topic which messages current subscriber wants to receive.

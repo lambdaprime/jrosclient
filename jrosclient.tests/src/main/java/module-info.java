@@ -22,7 +22,9 @@ open module jrosclient.tests {
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.params;
     requires id.xfunction;
-    requires pubsubtests;
+
+    /** Allow users to overwrite (disable) tests (methods) in {@link PubSubClientTests} */
+    requires transitive pubsubtests;
     requires transitive jrosclient;
 
     exports id.jrosclient.tests.integration;

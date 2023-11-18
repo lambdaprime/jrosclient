@@ -1,6 +1,8 @@
 plugins {
   id 'com.diffplug.spotless'
   id 'jacoco'
+  // only if you build Java library
+  id 'java-library'
 }
 
 eclipse.classpath.file {
@@ -12,7 +14,7 @@ eclipse.classpath.file {
 
 dependencies {
   implementation project(':jrosclient')
-  implementation "io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT"
+  api "io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT"
 
   def junitVersion = "5.8.1"
   implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
