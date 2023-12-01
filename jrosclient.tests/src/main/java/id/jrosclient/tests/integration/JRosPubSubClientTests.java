@@ -21,29 +21,15 @@ import id.jrosclient.JRosClient;
 import id.pubsubtests.PubSubClientTestCase;
 import id.pubsubtests.PubSubClientTests;
 import id.pubsubtests.TestPubSubClient;
-import java.time.Duration;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public abstract class JRosPubSubClientTests extends PubSubClientTests {
 
     private static Supplier<JRosClient> clientFactory;
-    private static Duration test_publish_multiple_60kb_messages_expected_timeout;
-    private static Duration test_publish_single_message_over_5mb_expected_timeout;
-    private static int test_throutput_expected_message_count;
 
-    protected static void init(
-            Supplier<JRosClient> clientFactory,
-            Duration test_publish_multiple_60kb_messages_expected_timeout,
-            Duration test_publish_single_message_over_5mb_expected_timeout,
-            int test_throutput_expected_message_count) {
+    protected static void init(Supplier<JRosClient> clientFactory) {
         JRosPubSubClientTests.clientFactory = clientFactory;
-        JRosPubSubClientTests.test_publish_multiple_60kb_messages_expected_timeout =
-                test_publish_multiple_60kb_messages_expected_timeout;
-        JRosPubSubClientTests.test_publish_single_message_over_5mb_expected_timeout =
-                test_publish_single_message_over_5mb_expected_timeout;
-        JRosPubSubClientTests.test_throutput_expected_message_count =
-                test_throutput_expected_message_count;
     }
 
     private static TestPubSubClient createClient() {
@@ -51,11 +37,6 @@ public abstract class JRosPubSubClientTests extends PubSubClientTests {
     }
 
     static Stream<PubSubClientTestCase> dataProvider() {
-        return Stream.of(
-                new PubSubClientTestCase(
-                        JRosPubSubClientTests::createClient,
-                        test_publish_multiple_60kb_messages_expected_timeout,
-                        test_publish_single_message_over_5mb_expected_timeout,
-                        test_throutput_expected_message_count));
+        return Stream.of(new PubSubClientTestCase(JRosPubSubClientTests::createClient));
     }
 }

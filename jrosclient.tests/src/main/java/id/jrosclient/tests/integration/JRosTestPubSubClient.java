@@ -18,7 +18,7 @@
 package id.jrosclient.tests.integration;
 
 import id.jrosclient.JRosClient;
-import id.jrosmessages.std_msgs.StringMessage;
+import id.jrosmessages.std_msgs.ByteMultiArrayMessage;
 import id.pubsubtests.TestPubSubClient;
 import id.xfunction.concurrent.SameThreadExecutorService;
 import id.xfunction.concurrent.flow.TransformProcessor;
@@ -46,20 +46,20 @@ public class JRosTestPubSubClient implements TestPubSubClient {
     @Override
     public void publish(String topic, Publisher<byte[]> publisher) {
         var transformer =
-                new TransformProcessor<byte[], StringMessage>(
-                        data -> Optional.of(new StringMessage(new String(data))),
+                new TransformProcessor<byte[], ByteMultiArrayMessage>(
+                        data -> Optional.of(new ByteMultiArrayMessage(data)),
                         new SameThreadExecutorService(),
                         1);
         publisher.subscribe(transformer);
-        Unchecked.run(() -> client.publish(topic, StringMessage.class, transformer));
+        Unchecked.run(() -> client.publish(topic, ByteMultiArrayMessage.class, transformer));
     }
 
     @Override
     public void subscribe(String topic, Subscriber<byte[]> subscriber) {
         var transformer =
-                new TransformProcessor<StringMessage, byte[]>(
-                        m -> Optional.ofNullable(m.data.getBytes()));
+                new TransformProcessor<ByteMultiArrayMessage, byte[]>(
+                        m -> Optional.ofNullable(m.data));
         transformer.subscribe(subscriber);
-        Unchecked.run(() -> client.subscribe(topic, StringMessage.class, transformer));
+        Unchecked.run(() -> client.subscribe(topic, ByteMultiArrayMessage.class, transformer));
     }
 }
