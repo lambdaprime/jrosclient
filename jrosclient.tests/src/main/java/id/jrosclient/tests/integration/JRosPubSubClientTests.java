@@ -20,23 +20,37 @@ package id.jrosclient.tests.integration;
 import id.jrosclient.JRosClient;
 import id.pubsubtests.PubSubClientTestCase;
 import id.pubsubtests.PubSubClientTests;
-import id.pubsubtests.TestPubSubClient;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
 public abstract class JRosPubSubClientTests extends PubSubClientTests {
 
-    private static Supplier<JRosClient> clientFactory;
+    private static List<TestCase> testCases;
 
-    protected static void init(Supplier<JRosClient> clientFactory) {
-        JRosPubSubClientTests.clientFactory = clientFactory;
-    }
+    public record TestCase(
+            String testCaseName,
+            Supplier<JRosClient> clientFactory,
+            Duration discoveryDuration,
+            int publisherQueueSize) {}
 
-    private static TestPubSubClient createClient() {
-        return new JRosTestPubSubClient(clientFactory.get());
+    protected static void init(TestCase... testCases) {
+        JRosPubSubClientTests.testCases = Arrays.asList(testCases);
     }
 
     static Stream<PubSubClientTestCase> dataProvider() {
-        return Stream.of(new PubSubClientTestCase(JRosPubSubClientTests::createClient));
+        return testCases.stream()
+                .map(
+                        tc ->
+                                new PubSubClientTestCase(
+                                        tc.testCaseName,
+                                        () -> new JRosTestPubSubClient(tc.clientFactory.get()),
+                                        tc.discoveryDuration,
+                                        tc.publisherQueueSize));
     }
 }

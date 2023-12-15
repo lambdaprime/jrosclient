@@ -18,8 +18,8 @@
 package id.jrosclient.tests.integration;
 
 import id.jrosclient.JRosClient;
-import id.pubsubtests.PubSubClientThroughputTestCase;
-import id.pubsubtests.PubSubClientThroughputTests;
+import id.pubsubtests.PubSubClientLatencyTestCase;
+import id.pubsubtests.PubSubClientLatencyTests;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -29,34 +29,33 @@ import java.util.stream.Stream;
 /**
  * @author lambdaprime intid@protonmail.com
  */
-public abstract class JRosPubSubClientThroughputTests extends PubSubClientThroughputTests {
+public abstract class JRosPubSubClientLatencyTests extends PubSubClientLatencyTests {
     private static List<TestCase> testCases;
 
     public record TestCase(
             String testCaseName,
             Supplier<JRosClient> clientFactory,
+            Duration discoveryDuration,
             Duration maxTestDuration,
             int messageSizeInBytes,
-            int maxCountOfPublishedMessages,
-            Duration publishTimeout,
-            int expectedReceivedMessageCount) {}
+            Duration expectedMaxLatency,
+            int expectedMinReceivedMessageCount) {}
 
     protected static void init(TestCase... testCases) {
-        JRosPubSubClientThroughputTests.testCases = Arrays.asList(testCases);
+        JRosPubSubClientLatencyTests.testCases = Arrays.asList(testCases);
     }
 
-    static Stream<PubSubClientThroughputTestCase> dataProvider() {
+    static Stream<PubSubClientLatencyTestCase> dataProvider() {
         return testCases.stream()
                 .map(
                         tc ->
-                                new PubSubClientThroughputTestCase(
+                                new PubSubClientLatencyTestCase(
                                         tc.testCaseName,
                                         () -> new JRosTestPubSubClient(tc.clientFactory.get()),
+                                        tc.discoveryDuration,
                                         tc.maxTestDuration,
                                         tc.messageSizeInBytes,
-                                        tc.maxCountOfPublishedMessages,
-                                        tc.publishTimeout,
-                                        false,
-                                        tc.expectedReceivedMessageCount));
+                                        tc.expectedMaxLatency,
+                                        tc.expectedMinReceivedMessageCount));
     }
 }

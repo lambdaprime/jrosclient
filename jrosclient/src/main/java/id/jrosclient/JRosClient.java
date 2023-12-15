@@ -71,8 +71,9 @@ public interface JRosClient extends AutoCloseable {
     /**
      * Create a new topic and start publishing messages for it.
      *
-     * <p>Publisher is used to publish messages for particular topic. Other ROS nodes can see the
-     * topic and subscribe for it so they will start receiving messages published to it.
+     * <p>Publisher is user owned and it is used to publish messages for particular topic. Other ROS
+     * nodes can see the topic and subscribe for it so they will start receiving messages published
+     * to it.
      *
      * <p>This allows to use same instance of {@link Publisher} to publish messages on multiple of
      * different topics as long as their message types are similar.
@@ -80,7 +81,8 @@ public interface JRosClient extends AutoCloseable {
      * @param <M> type of messages in the topic
      * @param topic Topic name
      * @param messageClass class of the messages in this topic
-     * @param publisher is used to emit messages which will be sent to topic subscribers
+     * @param publisher user owned publisher is used to emit messages which will be sent to ROS
+     *     topic subscribers
      */
     default <M extends Message> void publish(
             String topic, Class<M> messageClass, Publisher<M> publisher)
@@ -142,7 +144,7 @@ public interface JRosClient extends AutoCloseable {
     /** Check if there is any publisher available in the system for a given topic */
     boolean hasPublisher(String topic);
 
-    /** May block until there is no more pending messages in any of the publisher internal queue */
+    /** May block until there is no more pending messages in any of the internal queue */
     @Override
     void close();
 }
