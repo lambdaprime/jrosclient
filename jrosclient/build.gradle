@@ -25,6 +25,7 @@ eclipse.classpath.file {
 
 dependencies {
   api "io.github.lambdaprime:jrosmessages:4.0-SNAPSHOT"
+  api "io.opentelemetry:opentelemetry-api:1.22.0"
 }
 
 configurations {

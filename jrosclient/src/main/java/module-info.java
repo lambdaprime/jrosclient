@@ -29,6 +29,7 @@
 module jrosclient {
     requires id.xfunction;
     requires transitive jrosmessages;
+    requires io.opentelemetry.api;
 
     exports id.jrosclient;
     exports id.jrosclient.exceptions;

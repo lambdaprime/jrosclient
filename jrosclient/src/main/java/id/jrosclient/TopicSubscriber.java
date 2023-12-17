@@ -22,6 +22,9 @@ import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
 import id.xfunction.logging.XLogger;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.Meter;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
@@ -45,6 +48,20 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     private final XLogger LOGGER = XLogger.getLogger(this);
     private static final RosNameUtils utils = new RosNameUtils();
 
+    private final Meter METER =
+            GlobalOpenTelemetry.getMeter(TopicSubmissionPublisher.class.getSimpleName());
+    private final LongHistogram TOPIC_SUBSCRIBER_OBJECTS_METER =
+            METER.histogramBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_METRIC)
+                    .setDescription(JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_METRIC_DESCRIPTION)
+                    .ofLongs()
+                    .build();
+    private final LongHistogram TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METER =
+            METER.histogramBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC)
+                    .setDescription(
+                            JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC_DESCRIPTION)
+                    .ofLongs()
+                    .build();
+
     private Class<M> messageClass;
     private Optional<Subscription> subscription = Optional.empty();
     private String topic;
@@ -61,6 +78,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     public TopicSubscriber(Class<M> messageClass, String topic) {
         this.messageClass = messageClass;
         this.topic = utils.toAbsoluteName(topic);
+        TOPIC_SUBSCRIBER_OBJECTS_METER.record(1);
     }
 
     /**
@@ -77,6 +95,11 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
         Preconditions.isTrue(this.subscription.isEmpty(), "Already subscribed");
         this.subscription = Optional.of(new JRosClientSubscription(subscription));
         this.subscription.get().request(initNumOfMessages);
+    }
+
+    @Override
+    public void onNext(M item) {
+        TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METER.record(1);
     }
 
     /**
