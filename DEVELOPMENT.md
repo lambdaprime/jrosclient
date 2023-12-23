@@ -16,6 +16,7 @@ gradle eclipse
 
 - Close version in gradle.properties
 - Run `gradle clean build javadoc`
+- Run `gradle clean build -b android/build.gradle`
 - Publish
 - Open next SNAPSHOT version
 - Commit changes
