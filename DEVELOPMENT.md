@@ -14,12 +14,12 @@ gradle eclipse
 
 # Release steps
 
+- Run `gradle clean build -b android/build.gradle`
 - Close version in gradle.properties
 - Run `gradle clean build javadoc`
-- Run `gradle clean build -b android/build.gradle`
 - Publish
 - Open next SNAPSHOT version
+- Update CHANGELOG.md with new release (for changelog generation use `git log --format=%s`)
 - Commit changes
 - Push
-- Create new release in GitHub (for changelog use `git log --format=%s`)
 - Upload documentation to website
