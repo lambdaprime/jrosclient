@@ -111,11 +111,12 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
      */
     @Override
     public void onError(Throwable throwable) {
-        LOGGER.severe("Default onError handler: {0}", throwable);
+        LOGGER.severe("Default onError handler", throwable);
         System.err.println("Exception received by default TopicSubscriber::onError handler:");
         if (!muteDefaultHandlerDetails) {
             System.err.println(
-                    "To change default onError handler, simply override onError of the subscriber");
+                    "To change default onError handler, simply override TopicSubscriber::onError of"
+                            + " the subscriber");
             muteDefaultHandlerDetails = true;
         }
         throwable.printStackTrace();
