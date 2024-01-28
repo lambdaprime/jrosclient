@@ -14,8 +14,8 @@ java {
 }
 
 dependencies {
-  api "io.github.lambdaprime:jrosmessages:4.0-SNAPSHOT"
-  api "io.opentelemetry:opentelemetry-api:1.22.0"
+  api "io.github.lambdaprime:jrosmessages:5.0"
+  api "io.opentelemetry:opentelemetry-api:1.34.1"
 }
 
 android {
