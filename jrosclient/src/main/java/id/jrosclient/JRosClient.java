@@ -147,4 +147,7 @@ public interface JRosClient extends AutoCloseable {
     /** May block until there is no more pending messages in any of the internal queue */
     @Override
     void close();
+
+    /** @return true if {@link #close()} operation was requested */
+    void isClosed();
 }
