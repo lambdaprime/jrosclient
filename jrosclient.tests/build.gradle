@@ -1,6 +1,5 @@
 plugins {
   id 'com.diffplug.spotless'
-  id 'jacoco'
   // only if you build Java library
   id 'java-library'
 }
@@ -13,19 +12,14 @@ eclipse.classpath.file {
 }
 
 dependencies {
-  implementation project(':jrosclient')
-  api "io.github.lambdaprime:pubsubtests:1.0-SNAPSHOT"
+  implementation project(":${zzName}")
+  zzTestDependencies.split(',').findAll{ !it.isBlank() }.each { api it }
 
   def junitVersion = "5.8.1"
   implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
   implementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
   runtimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
   runtimeOnly "org.junit.platform:junit-platform-commons:1.7.0"
-}
-
-jacoco {
-  // Java 21 support
-  toolVersion = "0.8.10"
 }
 
 test {
@@ -46,13 +40,13 @@ if (project.hasProperty('publish')) {
   publishing {
     publications {
       mavenJava(MavenPublication) {
-        artifactId = 'jrosclient.tests'
-        groupId = 'io.github.lambdaprime'
+        artifactId = "${zzName}.tests"
+        groupId = "io.github.${zzNamespace}"
         from components.java
         pom {
-          name = 'jrosclient.tests'
-          description = 'jrosclient tests'
-          url = 'http://portal2.atwebpages.com/jrosclient'
+          name = "${zzName}.tests"
+          description = "${zzName} tests"
+          url = zzUrl
 
           licenses {
             license {
@@ -63,13 +57,13 @@ if (project.hasProperty('publish')) {
 
           developers {
             developer {
-              id = 'lambdaprime'
-              email = 'intid@protonmail.com'
+              id = zzDevName
+              email = zzDevEmail
             }
           }
 
           scm {
-            url = 'https://github.com/lambdaprime/jrosclient'
+            url = zzRepoUrl
           }
         }
       }
