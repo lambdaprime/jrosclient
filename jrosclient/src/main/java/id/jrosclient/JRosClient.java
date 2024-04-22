@@ -151,5 +151,5 @@ public interface JRosClient extends AutoCloseable {
     /**
      * @return true if {@link #close()} operation was requested
      */
-    void isClosed();
+    boolean isClosed();
 }
