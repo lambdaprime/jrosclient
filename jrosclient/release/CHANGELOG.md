@@ -1,3 +1,11 @@
+# Version 9
+
+- Fix isClosed signature and moved TextUtils::toString to jrosmessages
+- Updating gradle files
+- Minor javadoc updates
+
+[jrosclient-v9.0.zip](https://github.com/lambdaprime/jrosclient/raw/main/jrosclient/release/jrosclient-v9.0.zip)
+
 # Version 8
 
 - Updating jrosmessages to v5 and opentelemetry-api

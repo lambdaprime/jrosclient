@@ -66,6 +66,7 @@ javadoc {
     .sourceDirectories
     .getFiles()
     .stream()
+    .filter({f -> f.exists()})
     .map({f -> f.toString() })
     .collect(java.util.stream.Collectors.joining(":"))
   def moduleSourcePath = []
@@ -75,7 +76,9 @@ javadoc {
   // we use "Module-specific form" for that.
   // https://docs.oracle.com/en/java/javase/18/docs/specs/man/javac.html#the-module-source-path-option
   zzJavadocInheritFrom.split(',').findAll{ !it.isBlank() }.each {
-    moduleSourcePath += "${it}=${project.rootDir}/../${it}/${it}/src/main/java:${project.rootDir}/../${it}/${it}/src/main/gen/java"
+    moduleSourcePath += "${it}=${project.rootDir}/../${it}/${it}/src/main/java"
+    def srcGen = "${project.rootDir}/../${it}/${it}/src/main/gen/java"
+    if (file(srcGen).exists()) moduleSourcePath += ":" + srcGen
   }
   options.addMultilineStringsOption("-module-source-path").value = moduleSourcePath.stream().map(Object::toString).toList()
   exclude "${zzNamespace}/${zzName}/impl/**"
