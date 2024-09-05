@@ -18,13 +18,22 @@
 package id.jrosclient.tests.integration;
 
 import id.jrosclient.JRosClient;
+import id.jrosclient.TopicSubmissionPublisher;
+import id.jrosmessages.std_msgs.EmptyMessage;
 import id.pubsubtests.PubSubClientTestCase;
 import id.pubsubtests.PubSubClientTests;
+import id.xfunction.concurrent.flow.FixedCollectorSubscriber;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author lambdaprime intid@protonmail.com
@@ -32,6 +41,7 @@ import java.util.stream.Stream;
 public abstract class JRosPubSubClientTests extends PubSubClientTests {
 
     private static List<TestCase> testCases;
+    private static Supplier<JRosClient> clientFactory;
 
     public record TestCase(
             String testCaseName,
@@ -39,7 +49,8 @@ public abstract class JRosPubSubClientTests extends PubSubClientTests {
             Duration discoveryDuration,
             int publisherQueueSize) {}
 
-    protected static void init(TestCase... testCases) {
+    protected static void init(Supplier<JRosClient> clientFactory, TestCase... testCases) {
+        JRosPubSubClientTests.clientFactory = clientFactory;
         JRosPubSubClientTests.testCases = Arrays.asList(testCases);
     }
 
@@ -52,5 +63,31 @@ public abstract class JRosPubSubClientTests extends PubSubClientTests {
                                         () -> new JRosTestPubSubClient(tc.clientFactory.get()),
                                         tc.discoveryDuration,
                                         tc.publisherQueueSize));
+    }
+
+    @Test
+    public void test_empty_messages() {
+        String topic = "/testTopic1";
+        try (var publisher = new TopicSubmissionPublisher<>(EmptyMessage.class, topic);
+                var pubClient = clientFactory.get();
+                var subClient = clientFactory.get(); ) {
+            pubClient.publish(publisher);
+            var collector = new FixedCollectorSubscriber<>(new ArrayList<EmptyMessage>(), 111);
+            subClient.subscribe(topic, EmptyMessage.class, collector);
+            ForkJoinPool.commonPool()
+                    .submit(
+                            () -> {
+                                while (!pubClient.isClosed()) {
+                                    publisher.submit(new EmptyMessage());
+                                }
+                            });
+            try {
+                var actual = collector.getFuture().get();
+                Assertions.assertEquals(Collections.nCopies(111, new EmptyMessage()), actual);
+                System.out.println("All received");
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

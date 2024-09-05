@@ -26,6 +26,7 @@ open module jrosclient.tests {
     /** Allow users to overwrite (disable) tests (methods) in {@link PubSubClientTests} */
     requires transitive pubsubtests;
     requires transitive jrosclient;
+    requires jrosmessages;
 
     exports id.jrosclient.tests.integration;
 }
