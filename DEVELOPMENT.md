@@ -25,7 +25,7 @@ gradle eclipse
 - Run `gradle clean build javadoc`
 - Publish
 - Open next SNAPSHOT version
-- Update CHANGELOG.md with new release (for changelog generation use `git log --format=%s`)
+- Update [CHANGELOG.md](jrosclient/release/CHANGELOG.md) with new release (for changelog generation use `git log --format=%s`)
 - Commit changes
 - Push
 - Upload documentation to website

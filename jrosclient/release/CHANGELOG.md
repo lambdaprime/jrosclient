@@ -1,3 +1,10 @@
+# Version 10
+
+- Issue pinorobotics/jros2services#1 Fixing processing of empty messages, adding tests
+- Updating to new changes in pubsubtests
+
+[jrosclient-v10.0.zip](https://github.com/lambdaprime/jrosclient/raw/main/jrosclient/release/jrosclient-v10.0.zip)
+
 # Version 9
 
 - Fix isClosed signature and moved TextUtils::toString to jrosmessages
