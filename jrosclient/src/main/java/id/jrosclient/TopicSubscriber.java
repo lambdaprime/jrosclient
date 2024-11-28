@@ -23,6 +23,7 @@ import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import java.util.Optional;
@@ -45,8 +46,8 @@ import java.util.concurrent.Flow.Subscription;
  * @author lambdaprime intid@protonmail.com
  */
 public abstract class TopicSubscriber<M extends Message> implements Flow.Subscriber<M> {
-    private final XLogger LOGGER = XLogger.getLogger(this);
     private static final RosNameUtils utils = new RosNameUtils();
+    private final XLogger LOGGER = XLogger.getLogger(this);
 
     private final Meter METER =
             GlobalOpenTelemetry.getMeter(TopicSubmissionPublisher.class.getSimpleName());
@@ -67,6 +68,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     private String topic;
     private int initNumOfMessages = 1;
     private boolean muteDefaultHandlerDetails;
+    private Attributes metricAttributes;
 
     /**
      * Creates subscriber for a topic which when first subscribed will request 1 message.
@@ -78,7 +80,8 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     public TopicSubscriber(Class<M> messageClass, String topic) {
         this.messageClass = messageClass;
         this.topic = utils.toAbsoluteName(topic);
-        TOPIC_SUBSCRIBER_OBJECTS_COUNT_METER.add(1);
+        metricAttributes = Attributes.builder().put("topic", topic).build();
+        TOPIC_SUBSCRIBER_OBJECTS_COUNT_METER.add(1, metricAttributes);
     }
 
     /**
@@ -99,7 +102,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
 
     @Override
     public void onNext(M item) {
-        TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METER.add(1);
+        TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METER.add(1, metricAttributes);
     }
 
     /**

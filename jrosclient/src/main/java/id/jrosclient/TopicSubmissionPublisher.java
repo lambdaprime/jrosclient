@@ -17,11 +17,13 @@
  */
 package id.jrosclient;
 
+import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import java.util.concurrent.Executor;
@@ -45,6 +47,7 @@ import java.util.concurrent.SubmissionPublisher;
  */
 public class TopicSubmissionPublisher<M extends Message> extends SubmissionPublisher<M>
         implements TopicPublisher<M> {
+    private static final RosNameUtils nameUtils = new RosNameUtils();
     private final XLogger LOGGER = XLogger.getLogger(this);
 
     private final Meter METER =
@@ -67,6 +70,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
                     .build();
     private Class<M> messageClass;
     private String topic;
+    private Attributes metricAttributes;
 
     /**
      * Create topic publisher with {@link ForkJoinPool#commonPool()} executor and {@link
@@ -88,7 +92,9 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
         super(executor, maxBufferCapacity);
         this.messageClass = messageClass;
         this.topic = topic;
-        TOPIC_PUBLISHER_OBJECTS_COUNT_METER.add(1);
+        metricAttributes =
+                Attributes.builder().put("topic", nameUtils.toAbsoluteName(topic)).build();
+        TOPIC_PUBLISHER_OBJECTS_COUNT_METER.add(1, metricAttributes);
     }
 
     @Override
@@ -103,7 +109,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
 
     @Override
     public int submit(M item) {
-        TOPIC_PUBLISHER_SUBMITTED_MESSAGE_COUNT_METER.add(1);
+        TOPIC_PUBLISHER_SUBMITTED_MESSAGE_COUNT_METER.add(1, metricAttributes);
         return super.submit(item);
     }
 
@@ -127,6 +133,6 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
     @Override
     public void onPublishError(Throwable exception) {
         LOGGER.severe("Error delivering message to the subscriber", exception);
-        TOPIC_PUBLISHER_ERRORS_COUNT_METER.add(1);
+        TOPIC_PUBLISHER_ERRORS_COUNT_METER.add(1, metricAttributes);
     }
 }
