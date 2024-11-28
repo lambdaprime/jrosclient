@@ -24,38 +24,46 @@ package id.jrosclient;
  */
 public interface JRosClientMetrics {
 
-    String PUBLISH_CALLS_METRIC = "publish_calls";
-    String PUBLISH_CALLS_METRIC_DESCRIPTION = "Number of times JRosClient::publish is called";
+    String PUBLISH_CALLS_COUNT_METRIC = "publish_calls_total";
+    String PUBLISH_CALLS_COUNT_METRIC_DESCRIPTION =
+            "Total number of times JRosClient::publish is called";
 
-    String SUBSCRIBE_CALLS_METRIC = "subscribe_calls";
-    String SUBSCRIBE_CALLS_METRIC_DESCRIPTION = "Number of times JRosClient::subscribe is called";
+    String SUBSCRIBE_CALLS_COUNT_METRIC = "subscribe_calls_total";
+    String SUBSCRIBE_CALLS_COUNT_METRIC_DESCRIPTION =
+            "Total number of times JRosClient::subscribe is called";
 
-    String CLIENT_OBJECTS_METRIC = "client_objects";
-    String CLIENT_OBJECTS_METRIC_DESCRIPTION = "Number of jrosclient objects";
+    String CLIENT_OBJECTS_COUNT_METRIC = "client_objects_total";
+    String CLIENT_OBJECTS_COUNT_METRIC_DESCRIPTION = "Total number of jrosclient objects";
 
-    String CLIENT_CLOSE_CALLS_METRIC = "client_close_calls";
-    String CLIENT_CLOSE_CALLS_METRIC_DESCRIPTION =
-            "Number of times JRosClient::close is called. It should match client_objects metric"
-                    + " otherwise it means that some client objects are not closed.";
+    String CLIENT_CLOSE_CALLS_COUNT_METRIC = "client_close_calls_total";
+    String CLIENT_CLOSE_CALLS_COUNT_METRIC_DESCRIPTION =
+            "Total number of times JRosClient::close is called. It should match client_objects"
+                    + " metric otherwise it means that some client objects are not closed.";
 
-    String TOPIC_PUBLISHER_OBJECTS_METRIC = "topic_publisher_objects";
-    String TOPIC_PUBLISHER_OBJECTS_METRIC_DESCRIPTION = "Number of TopicPublisher objects";
+    String TOPIC_PUBLISHER_OBJECTS_COUNT_METRIC = "topic_publisher_objects_total";
+    String TOPIC_PUBLISHER_OBJECTS_COUNT_METRIC_DESCRIPTION =
+            "Total number of TopicPublisher objects";
 
-    String TOPIC_PUBLISHER_SUBMITTED_MESSAGES_METRIC = "topic_publisher_submitted_messages";
-    String TOPIC_PUBLISHER_SUBMITTED_MESSAGES_METRIC_DESCRIPTION =
-            "Number of messages submitted to TopicPublisher";
+    String TOPIC_PUBLISHER_SUBMITTED_MESSAGES_COUNT_METRIC =
+            "topic_publisher_submitted_messages_total";
+    String TOPIC_PUBLISHER_SUBMITTED_MESSAGES_COUNT_METRIC_DESCRIPTION =
+            "Total number of messages submitted to TopicPublisher";
 
-    String TOPIC_PUBLISHER_ERRORS_METRIC = "topic_publisher_errors";
-    String TOPIC_PUBLISHER_ERRORS_METRIC_DESCRIPTION = "Number of submit errors in TopicPublisher";
+    String TOPIC_PUBLISHER_ERRORS_COUNT_METRIC = "topic_publisher_errors_total";
+    String TOPIC_PUBLISHER_ERRORS_COUNT_METRIC_DESCRIPTION =
+            "Total number of submit errors in TopicPublisher";
 
-    String TOPIC_SUBSCRIBER_OBJECTS_METRIC = "topic_subscriber_objects";
-    String TOPIC_SUBSCRIBER_OBJECTS_METRIC_DESCRIPTION = "Number of TopicSubscriber objects";
+    String TOPIC_SUBSCRIBER_OBJECTS_COUNT_METRIC = "topic_subscriber_objects_total";
+    String TOPIC_SUBSCRIBER_OBJECTS_COUNT_METRIC_DESCRIPTION =
+            "Total number of TopicSubscriber objects";
 
-    String TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC = "topic_subscriber_messages_received";
-    String TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC_DESCRIPTION =
-            "Number of messages received by TopicSubscriber";
+    String TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METRIC =
+            "topic_subscriber_messages_received_total";
+    String TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METRIC_DESCRIPTION =
+            "Total number of messages received by TopicSubscriber";
 
-    String TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METRIC = "topic_subscriber_messages_requested";
-    String TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METRIC_DESCRIPTION =
-            "Number of messages requested by TopicSubscriber";
+    String TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METRIC =
+            "topic_subscriber_messages_requested_total";
+    String TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METRIC_DESCRIPTION =
+            "Total number of messages requested by TopicSubscriber";
 }

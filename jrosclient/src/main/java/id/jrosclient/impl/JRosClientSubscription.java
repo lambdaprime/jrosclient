@@ -20,7 +20,7 @@ package id.jrosclient.impl;
 import id.jrosclient.JRosClientMetrics;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import java.util.concurrent.Flow.Subscription;
 
@@ -33,12 +33,11 @@ public class JRosClientSubscription implements Subscription {
 
     private final Meter METER =
             GlobalOpenTelemetry.getMeter(JRosClientSubscription.class.getSimpleName());
-    private final LongHistogram TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METRIC)
+    private final LongCounter TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METRIC)
                     .setDescription(
                             JRosClientMetrics
-                                    .TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METRIC_DESCRIPTION)
-                    .ofLongs()
+                                    .TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METRIC_DESCRIPTION)
                     .build();
 
     private Subscription subscription;
@@ -51,7 +50,7 @@ public class JRosClientSubscription implements Subscription {
     public void request(long n) {
         LOGGER.entering("request", n);
         subscription.request(n);
-        TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_METER.record(n);
+        TOPIC_SUBSCRIBER_MESSAGES_REQUESTED_COUNT_METER.add(n);
         LOGGER.exiting("request");
     }
 

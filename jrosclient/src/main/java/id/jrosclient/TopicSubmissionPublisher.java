@@ -22,7 +22,7 @@ import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Flow;
@@ -49,21 +49,21 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
 
     private final Meter METER =
             GlobalOpenTelemetry.getMeter(TopicSubmissionPublisher.class.getSimpleName());
-    private final LongHistogram TOPIC_PUBLISHER_OBJECTS_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_PUBLISHER_OBJECTS_METRIC)
-                    .setDescription(JRosClientMetrics.TOPIC_PUBLISHER_OBJECTS_METRIC_DESCRIPTION)
-                    .ofLongs()
-                    .build();
-    private final LongHistogram TOPIC_PUBLISHER_SUBMITTED_MESSAGE_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_PUBLISHER_SUBMITTED_MESSAGES_METRIC)
+    private final LongCounter TOPIC_PUBLISHER_OBJECTS_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_PUBLISHER_OBJECTS_COUNT_METRIC)
                     .setDescription(
-                            JRosClientMetrics.TOPIC_PUBLISHER_SUBMITTED_MESSAGES_METRIC_DESCRIPTION)
-                    .ofLongs()
+                            JRosClientMetrics.TOPIC_PUBLISHER_OBJECTS_COUNT_METRIC_DESCRIPTION)
                     .build();
-    private final LongHistogram TOPIC_PUBLISHER_ERRORS_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_PUBLISHER_ERRORS_METRIC)
-                    .setDescription(JRosClientMetrics.TOPIC_PUBLISHER_ERRORS_METRIC_DESCRIPTION)
-                    .ofLongs()
+    private final LongCounter TOPIC_PUBLISHER_SUBMITTED_MESSAGE_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_PUBLISHER_SUBMITTED_MESSAGES_COUNT_METRIC)
+                    .setDescription(
+                            JRosClientMetrics
+                                    .TOPIC_PUBLISHER_SUBMITTED_MESSAGES_COUNT_METRIC_DESCRIPTION)
+                    .build();
+    private final LongCounter TOPIC_PUBLISHER_ERRORS_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_PUBLISHER_ERRORS_COUNT_METRIC)
+                    .setDescription(
+                            JRosClientMetrics.TOPIC_PUBLISHER_ERRORS_COUNT_METRIC_DESCRIPTION)
                     .build();
     private Class<M> messageClass;
     private String topic;
@@ -88,7 +88,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
         super(executor, maxBufferCapacity);
         this.messageClass = messageClass;
         this.topic = topic;
-        TOPIC_PUBLISHER_OBJECTS_METER.record(1);
+        TOPIC_PUBLISHER_OBJECTS_COUNT_METER.add(1);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
 
     @Override
     public int submit(M item) {
-        TOPIC_PUBLISHER_SUBMITTED_MESSAGE_METER.record(1);
+        TOPIC_PUBLISHER_SUBMITTED_MESSAGE_COUNT_METER.add(1);
         return super.submit(item);
     }
 
@@ -127,6 +127,6 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
     @Override
     public void onPublishError(Throwable exception) {
         LOGGER.severe("Error delivering message to the subscriber", exception);
-        TOPIC_PUBLISHER_ERRORS_METER.record(1);
+        TOPIC_PUBLISHER_ERRORS_COUNT_METER.add(1);
     }
 }

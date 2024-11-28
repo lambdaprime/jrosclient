@@ -23,7 +23,7 @@ import id.jrosmessages.Message;
 import id.xfunction.Preconditions;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import java.util.Optional;
 import java.util.concurrent.Flow;
@@ -50,16 +50,16 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
 
     private final Meter METER =
             GlobalOpenTelemetry.getMeter(TopicSubmissionPublisher.class.getSimpleName());
-    private final LongHistogram TOPIC_SUBSCRIBER_OBJECTS_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_METRIC)
-                    .setDescription(JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_METRIC_DESCRIPTION)
-                    .ofLongs()
-                    .build();
-    private final LongHistogram TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METER =
-            METER.histogramBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC)
+    private final LongCounter TOPIC_SUBSCRIBER_OBJECTS_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_COUNT_METRIC)
                     .setDescription(
-                            JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METRIC_DESCRIPTION)
-                    .ofLongs()
+                            JRosClientMetrics.TOPIC_SUBSCRIBER_OBJECTS_COUNT_METRIC_DESCRIPTION)
+                    .build();
+    private final LongCounter TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METER =
+            METER.counterBuilder(JRosClientMetrics.TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METRIC)
+                    .setDescription(
+                            JRosClientMetrics
+                                    .TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METRIC_DESCRIPTION)
                     .build();
 
     private Class<M> messageClass;
@@ -78,7 +78,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     public TopicSubscriber(Class<M> messageClass, String topic) {
         this.messageClass = messageClass;
         this.topic = utils.toAbsoluteName(topic);
-        TOPIC_SUBSCRIBER_OBJECTS_METER.record(1);
+        TOPIC_SUBSCRIBER_OBJECTS_COUNT_METER.add(1);
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
 
     @Override
     public void onNext(M item) {
-        TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_METER.record(1);
+        TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METER.add(1);
     }
 
     /**
