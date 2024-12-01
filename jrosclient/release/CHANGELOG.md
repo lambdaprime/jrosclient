@@ -1,3 +1,10 @@
+# Version 11
+
+- Including topic name in topic related metrics
+- Changing type of metrics
+
+[jrosclient-v11.0.zip](https://github.com/lambdaprime/jrosclient/raw/main/jrosclient/release/jrosclient-v11.0.zip)
+
 # Version 10
 
 - Issue pinorobotics/jros2services#1 Fixing processing of empty messages, adding tests
