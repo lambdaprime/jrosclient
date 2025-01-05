@@ -17,7 +17,9 @@
  */
 package id.jrosclient;
 
+import id.jroscommon.RosName;
 import id.jrosmessages.Message;
+import id.jrosmessages.MessageDescriptor;
 import java.io.IOException;
 import java.util.concurrent.Flow;
 
@@ -33,14 +35,14 @@ import java.util.concurrent.Flow;
 public interface TopicPublisher<M extends Message> extends Flow.Publisher<M>, AutoCloseable {
 
     /**
-     * @return class of messages which is published in this topic
+     * @return descriptor of the messages which are published in this topic
      */
-    Class<M> getMessageClass();
+    MessageDescriptor<M> getMessageDescriptor();
 
     /**
      * @return Topic name
      */
-    String getTopic();
+    RosName getTopic();
 
     /**
      * Notifies publisher about an error which happened when trying to deliver message to one of the

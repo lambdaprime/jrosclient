@@ -19,8 +19,9 @@ package id.jrosclient;
 
 import id.jrosclient.impl.JRosClientSubscription;
 import id.jrosclient.metrics.JRosClientMetrics;
-import id.jrosclient.utils.RosNameUtils;
+import id.jroscommon.RosName;
 import id.jrosmessages.Message;
+import id.jrosmessages.MessageDescriptor;
 import id.xfunction.Preconditions;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
@@ -47,7 +48,6 @@ import java.util.concurrent.Flow.Subscription;
  * @author lambdaprime intid@protonmail.com
  */
 public abstract class TopicSubscriber<M extends Message> implements Flow.Subscriber<M> {
-    private static final RosNameUtils utils = new RosNameUtils();
     private final XLogger LOGGER = XLogger.getLogger(this);
 
     private final Meter METER =
@@ -64,24 +64,32 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
                                     .TOPIC_SUBSCRIBER_MESSAGES_RECEIVED_COUNT_METRIC_DESCRIPTION)
                     .build();
 
-    private Class<M> messageClass;
+    private MessageDescriptor<M> messageDescriptor;
     private Optional<Subscription> subscription = Optional.empty();
-    private String topic;
+    private RosName topic;
     private int initNumOfMessages = 1;
     private boolean muteDefaultHandlerDetails;
     private Attributes metricAttributes;
 
     /**
+     * Simplified version of {@link #TopicSubscriber(MessageDescriptor, RosName)} where topic is
+     * converted to {@link RosName} and messageClass to {@link MessageDescriptor}
+     */
+    public TopicSubscriber(Class<M> messageClass, String topic) {
+        this(new MessageDescriptor<>(messageClass), new RosName(topic));
+    }
+
+    /**
      * Creates subscriber for a topic which when first subscribed will request 1 message.
      *
-     * @param messageClass class of the messages in this topic
+     * @param messageDescriptor descriptor of the messages in this topic
      * @param topic Name of the topic which messages current subscriber wants to receive. Topic name
      *     which should start from '/'
      */
-    public TopicSubscriber(Class<M> messageClass, String topic) {
-        this.messageClass = messageClass;
-        this.topic = utils.toAbsoluteName(topic);
-        metricAttributes = Attributes.builder().put("topic", topic).build();
+    public TopicSubscriber(MessageDescriptor<M> messageDescriptor, RosName topic) {
+        this.messageDescriptor = messageDescriptor;
+        this.topic = topic;
+        metricAttributes = Attributes.builder().put("topic", topic.toString()).build();
         TOPIC_SUBSCRIBER_OBJECTS_COUNT_METER.add(1, metricAttributes);
     }
 
@@ -130,9 +138,9 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     @Override
     public void onComplete() {}
 
-    /** Class of the messages in the current topic */
-    public Class<M> getMessageClass() {
-        return messageClass;
+    /** Descriptor of the messages in the current topic */
+    public MessageDescriptor<M> getMessageDescriptor() {
+        return messageDescriptor;
     }
 
     public Optional<Subscription> getSubscription() {
@@ -140,7 +148,7 @@ public abstract class TopicSubscriber<M extends Message> implements Flow.Subscri
     }
 
     /** Name of the topic of this subscriber */
-    public String getTopic() {
+    public RosName getTopic() {
         return topic;
     }
 }

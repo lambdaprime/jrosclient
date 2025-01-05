@@ -18,7 +18,9 @@
 package id.jrosclient;
 
 import id.jrosclient.exceptions.JRosClientException;
+import id.jroscommon.RosName;
 import id.jrosmessages.Message;
+import id.jrosmessages.MessageDescriptor;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.concurrent.Flow.Publisher;
@@ -46,18 +48,28 @@ public interface JRosClient extends AutoCloseable {
      *
      * @param <M> type of messages in the topic
      * @param topic Name of the topic which messages current subscriber wants to receive.
-     * @param messageClass class of the messages in this topic
+     * @param messageDescriptor descriptor of the messages in this topic
      * @param subscriber is notified for any new message which gets published to given topic.
      */
     <M extends Message> void subscribe(
-            String topic, Class<M> messageClass, Subscriber<M> subscriber)
+            RosName topic, MessageDescriptor<M> messageDescriptor, Subscriber<M> subscriber)
             throws JRosClientException;
+
+    /**
+     * Simplified version of {@link #subscribe(RosName, MessageDescriptor, Subscriber)} where topic
+     * is converted to {@link RosName}
+     */
+    default <M extends Message> void subscribe(
+            String topic, Class<M> messageClass, Subscriber<M> subscriber)
+            throws JRosClientException {
+        subscribe(new RosName(topic), new MessageDescriptor<>(messageClass), subscriber);
+    }
 
     /**
      * Subscribe to ROS topic.
      *
-     * <p>Shorter version of {@link #subscribe(String, Class, Subscriber)} which is based on {@link
-     * TopicSubscriber}
+     * <p>Simplified version of {@link #subscribe(RosName, MessageDescriptor, Subscriber)} which is
+     * based on {@link TopicSubscriber}
      *
      * @param <M> type of messages in the topic
      * @param subscriber provides information about the topic to subscribe for. Once subscribed it
@@ -65,7 +77,7 @@ public interface JRosClient extends AutoCloseable {
      */
     default <M extends Message> void subscribe(TopicSubscriber<M> subscriber)
             throws JRosClientException {
-        subscribe(subscriber.getTopic(), subscriber.getMessageClass(), subscriber);
+        subscribe(subscriber.getTopic(), subscriber.getMessageDescriptor(), subscriber);
     }
 
     /**
@@ -85,7 +97,7 @@ public interface JRosClient extends AutoCloseable {
      *     topic subscribers
      */
     default <M extends Message> void publish(
-            String topic, Class<M> messageClass, Publisher<M> publisher)
+            RosName topic, MessageDescriptor<M> messageDescriptor, Publisher<M> publisher)
             throws JRosClientException {
         publish(
                 new TopicPublisher<M>() {
@@ -95,12 +107,12 @@ public interface JRosClient extends AutoCloseable {
                     }
 
                     @Override
-                    public Class<M> getMessageClass() {
-                        return messageClass;
+                    public MessageDescriptor<M> getMessageDescriptor() {
+                        return messageDescriptor;
                     }
 
                     @Override
-                    public String getTopic() {
+                    public RosName getTopic() {
                         return topic;
                     }
 
@@ -114,6 +126,16 @@ public interface JRosClient extends AutoCloseable {
                         // ignore as it is not Flow.Publisher method
                     }
                 });
+    }
+
+    /**
+     * Simplified version of {@link #publish(RosName, Class, Publisher)} where topic is converted to
+     * {@link RosName}
+     */
+    default <M extends Message> void publish(
+            String topic, Class<M> messageClass, Publisher<M> publisher)
+            throws JRosClientException {
+        publish(new RosName(topic), new MessageDescriptor<>(messageClass), publisher);
     }
 
     /**
@@ -133,16 +155,25 @@ public interface JRosClient extends AutoCloseable {
      *
      * @param topic name of the topic used by the publisher
      */
-    <M extends Message> void unpublish(String topic, Class<M> messageClass)
+    <M extends Message> void unpublish(RosName topic, MessageDescriptor<M> messageDescriptor)
             throws JRosClientException;
+
+    /**
+     * Simplified version of {@link #unpublish(RosName, MessageDescriptor)} where topic is converted
+     * to {@link RosName}
+     */
+    default <M extends Message> void unpublish(String topic, Class<M> messageClass)
+            throws JRosClientException {
+        unpublish(new RosName(topic), new MessageDescriptor<>(messageClass));
+    }
 
     default <M extends Message> void unpublish(TopicPublisher<M> publisher)
             throws JRosClientException {
-        unpublish(publisher.getTopic(), publisher.getMessageClass());
+        unpublish(publisher.getTopic(), publisher.getMessageDescriptor());
     }
 
     /** Check if there is any publisher available in the system for a given topic */
-    boolean hasPublisher(String topic);
+    boolean hasPublisher(RosName topic);
 
     /** May block until there is no more pending messages in any of the internal queue */
     @Override

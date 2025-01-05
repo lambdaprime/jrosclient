@@ -28,6 +28,7 @@
  */
 module jrosclient {
     requires id.xfunction;
+    requires transitive jroscommon;
     requires transitive jrosmessages;
     requires io.opentelemetry.api;
 

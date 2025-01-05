@@ -18,8 +18,9 @@
 package id.jrosclient;
 
 import id.jrosclient.metrics.JRosClientMetrics;
-import id.jrosclient.utils.RosNameUtils;
+import id.jroscommon.RosName;
 import id.jrosmessages.Message;
+import id.jrosmessages.MessageDescriptor;
 import id.xfunction.XJson;
 import id.xfunction.lang.XThread;
 import id.xfunction.logging.XLogger;
@@ -48,7 +49,6 @@ import java.util.concurrent.SubmissionPublisher;
  */
 public class TopicSubmissionPublisher<M extends Message> extends SubmissionPublisher<M>
         implements TopicPublisher<M> {
-    private static final RosNameUtils nameUtils = new RosNameUtils();
     private final XLogger LOGGER = XLogger.getLogger(this);
 
     private final Meter METER =
@@ -69,42 +69,52 @@ public class TopicSubmissionPublisher<M extends Message> extends SubmissionPubli
                     .setDescription(
                             JRosClientMetrics.TOPIC_PUBLISHER_ERRORS_COUNT_METRIC_DESCRIPTION)
                     .build();
-    private Class<M> messageClass;
-    private String topic;
+    private MessageDescriptor<M> messageDescriptor;
+    private RosName topic;
     private Attributes metricAttributes;
+
+    /**
+     * Simplified version of {@link #TopicSubmissionPublisher(MessageDescriptor, RosName)} where
+     * topic is converted to {@link RosName} and messageClass to {@link MessageDescriptor}
+     */
+    public TopicSubmissionPublisher(Class<M> messageClass, String topic) {
+        this(new MessageDescriptor<>(messageClass), new RosName(topic));
+    }
 
     /**
      * Create topic publisher with {@link ForkJoinPool#commonPool()} executor and {@link
      * Flow#defaultBufferSize()} buffer size
      *
-     * @param messageClass class of messages in the topic
+     * @param messageDescriptor descriptor of the messages in the topic
      * @param topic topic name
      */
-    public TopicSubmissionPublisher(Class<M> messageClass, String topic) {
-        this(messageClass, topic, ForkJoinPool.commonPool(), Flow.defaultBufferSize());
+    public TopicSubmissionPublisher(MessageDescriptor<M> messageDescriptor, RosName topic) {
+        this(messageDescriptor, topic, ForkJoinPool.commonPool(), Flow.defaultBufferSize());
     }
 
     /**
-     * @param messageClass class of messages in the topic
+     * @param messageDescriptor descriptor of the messages in the topic
      * @param topic topic name
      */
     public TopicSubmissionPublisher(
-            Class<M> messageClass, String topic, Executor executor, int maxBufferCapacity) {
+            MessageDescriptor<M> messageDescriptor,
+            RosName topic,
+            Executor executor,
+            int maxBufferCapacity) {
         super(executor, maxBufferCapacity);
-        this.messageClass = messageClass;
+        this.messageDescriptor = messageDescriptor;
         this.topic = topic;
-        metricAttributes =
-                Attributes.builder().put("topic", nameUtils.toAbsoluteName(topic)).build();
+        metricAttributes = Attributes.builder().put("topic", topic.toGlobalName()).build();
         TOPIC_PUBLISHER_OBJECTS_COUNT_METER.add(1, metricAttributes);
     }
 
     @Override
-    public Class<M> getMessageClass() {
-        return messageClass;
+    public MessageDescriptor<M> getMessageDescriptor() {
+        return messageDescriptor;
     }
 
     @Override
-    public String getTopic() {
+    public RosName getTopic() {
         return topic;
     }
 
