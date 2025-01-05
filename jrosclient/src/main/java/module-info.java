@@ -32,6 +32,6 @@ module jrosclient {
     requires io.opentelemetry.api;
 
     exports id.jrosclient;
+    exports id.jrosclient.metrics;
     exports id.jrosclient.exceptions;
-    exports id.jrosclient.utils;
 }

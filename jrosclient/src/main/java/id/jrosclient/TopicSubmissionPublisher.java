@@ -17,6 +17,7 @@
  */
 package id.jrosclient;
 
+import id.jrosclient.metrics.JRosClientMetrics;
 import id.jrosclient.utils.RosNameUtils;
 import id.jrosmessages.Message;
 import id.xfunction.XJson;

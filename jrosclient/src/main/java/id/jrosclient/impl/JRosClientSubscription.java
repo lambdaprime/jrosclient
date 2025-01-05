@@ -17,7 +17,7 @@
  */
 package id.jrosclient.impl;
 
-import id.jrosclient.JRosClientMetrics;
+import id.jrosclient.metrics.JRosClientMetrics;
 import id.xfunction.logging.XLogger;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.metrics.LongCounter;
