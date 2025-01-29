@@ -92,7 +92,7 @@ public interface JRosClient extends AutoCloseable {
      *
      * @param <M> type of messages in the topic
      * @param topic Topic name
-     * @param messageClass class of the messages in this topic
+     * @param messageDescriptor class of the messages in this topic
      * @param publisher user owned publisher is used to emit messages which will be sent to ROS
      *     topic subscribers
      */
@@ -129,8 +129,8 @@ public interface JRosClient extends AutoCloseable {
     }
 
     /**
-     * Simplified version of {@link #publish(RosName, Class, Publisher)} where topic is converted to
-     * {@link RosName}
+     * Simplified version of {@link #publish(RosName, MessageDescriptor, Publisher)} where topic is
+     * converted to {@link RosName}
      */
     default <M extends Message> void publish(
             String topic, Class<M> messageClass, Publisher<M> publisher)

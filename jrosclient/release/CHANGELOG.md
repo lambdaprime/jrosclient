@@ -1,3 +1,11 @@
+# Version 12
+
+- Integrate RosName and MessageDescriptor
+- Hide TextUtils under impl package
+- Move JRosClientMetrics to separate package, add dashboard example
+
+[jrosclient-v12.0.zip](https://github.com/lambdaprime/jrosclient/raw/main/jrosclient/release/jrosclient-v12.0.zip)
+
 # Version 11
 
 - Including topic name in topic related metrics
