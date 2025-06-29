@@ -33,14 +33,15 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
 /**
- * Subscriber receives messages for the topic it is subscribed for and passes them to the onNext
- * method.
+ * Subscriber receives messages for the topic it is subscribed for and passes them to the {@link
+ * #onNext(Message)} method.
  *
  * <p>This class simplifies implementation of new subscribers since it provides default
- * implementations for most methods except onNext. The onNext method needs to be implemented for
- * each subscriber separately.
+ * implementations for most methods except {@link #onNext(Message)}. The {@link #onNext(Message)}
+ * method needs to be implemented by the users.
  *
- * <p>Before subscriber can start to receive messages it needs to be subscribed for the topic.
+ * <p>Before subscriber can start to receive messages it needs to be subscribed for the topic with
+ * {@link JRosClient}.
  *
  * <p>See <a href="{@docRoot}/../index.html">Module documentation</a> for examples.
  *

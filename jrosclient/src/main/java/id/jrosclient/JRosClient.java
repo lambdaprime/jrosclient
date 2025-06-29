@@ -29,8 +29,8 @@ import java.util.concurrent.Flow.Subscriber;
 /**
  * Main interface of the <b>jrosclient</b> which allows to interact with different versions of ROS.
  *
- * <p>We do not recommend using same object (instance) of JRosClient for publish and subscribe to
- * same topic. It is preferable to use two separate objects (see <a
+ * <p>We do not recommend using same object (instance) of {@link JRosClient} for publish and
+ * subscribe to the same topic. It is preferable to use two separate objects instead (see <a
  * href="https://github.com/lambdaprime/jros2client/blob/45418bf545a77515ddf27b8d95c9d0ace7376df8/jros2client.examples/src/PublisherSubscriberApp.java">PublisherSubscriberApp</a>
  * for ROS2 implementation)
  *
@@ -38,13 +38,15 @@ import java.util.concurrent.Flow.Subscriber;
  */
 public interface JRosClient extends AutoCloseable {
 
-    /** Returns ROS versions which are supported by this client */
+    /** Return ROS versions which are supported by this client */
     EnumSet<RosVersion> getSupportedRosVersion();
 
     /**
      * Subscribe to ROS topic
      *
-     * <p>By default, subscriber always runs on its own thread after it was subscribed.
+     * <p>By default, this call does not block and subscriber will be receiving messages in its own
+     * separate thread. Some {@link JRosClient} implementations may allow users to configure such
+     * behavior.
      *
      * @param <M> type of messages in the topic
      * @param topic Name of the topic which messages current subscriber wants to receive.
@@ -66,9 +68,7 @@ public interface JRosClient extends AutoCloseable {
     }
 
     /**
-     * Subscribe to ROS topic.
-     *
-     * <p>Simplified version of {@link #subscribe(RosName, MessageDescriptor, Subscriber)} which is
+     * Simplified version of {@link #subscribe(RosName, MessageDescriptor, Subscriber)} which is
      * based on {@link TopicSubscriber}
      *
      * @param <M> type of messages in the topic
@@ -139,9 +139,7 @@ public interface JRosClient extends AutoCloseable {
     }
 
     /**
-     * Create a new topic and start publishing messages for it.
-     *
-     * <p>Shorter version of {@link #publish(String, Class, Publisher)} which is based on {@link
+     * Simplified version of {@link #publish(String, Class, Publisher)} which is based on {@link
      * TopicPublisher}
      *
      * @param <M> type of messages in the topic
