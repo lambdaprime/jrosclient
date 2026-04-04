@@ -19,6 +19,7 @@ package id.jrosclient;
 
 import id.jrosclient.exceptions.JRosClientException;
 import id.jroscommon.RosName;
+import id.jroscommon.RosVersion;
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageDescriptor;
 import java.io.IOException;
