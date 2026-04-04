@@ -19,7 +19,16 @@ dependencies {
   implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
   implementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
   runtimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+  runtimeOnly "org.junit.platform:junit-platform-launcher"
   runtimeOnly "org.junit.platform:junit-platform-commons:1.7.0"
+}
+
+sourceSets {
+  test {
+    java {
+      srcDirs += ["src/gen/java"]
+    }
+  }
 }
 
 test {
@@ -31,7 +40,7 @@ test {
 }
 
 // run spotless and format code before the build
-testClasses.dependsOn spotlessApply
+classes.dependsOn spotlessApply
 
 if (project.hasProperty('publish')) {
 
